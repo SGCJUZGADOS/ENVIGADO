@@ -1494,7 +1494,7 @@ textarea {
 }
 
 /* Dark Modal Stylization (Default Small for Login) */
-.modal-content {
+.modal-content.login-content {
     background-color: #343a40;
     /* Modern Dark Grey */
     margin: 15% auto;
