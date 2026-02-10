@@ -996,9 +996,9 @@ footer {
     margin: auto;
     display: block;
     width: 95%;
-    max-width: 1400px;
+    max-width: 90vw;
     /* Mucho más grande */
-    max-height: 95vh;
+    max-height: 90vh;
     /* Ocupa casi toda la altura también */
     object-fit: contain;
     border-radius: 8px;
