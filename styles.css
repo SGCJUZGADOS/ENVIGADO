@@ -1489,331 +1489,346 @@ textarea {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    overflow: auto;
+    overflow: hidden;
+    /* Evitar scroll en la imagen grande */
+    background-color: rgba(0, 0, 0, 0.9);
 }
 
-/* Dark Modal Stylization (Default Small for Login) */
-.modal-content.login-content {
-    background-color: #343a40;
-    /* Modern Dark Grey */
-    margin: 15% auto;
-    /* Centered nicely */
-    padding: 30px;
-    border: 1px solid #6c757d;
-    /* Metallic Border */
-    width: 90%;
-    max-width: 380px;
-    /* SMALL LOGIN WINDOW */
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-    position: relative;
-    text-align: center;
-}
+/* REGLA ESPECIFICA PARA LA IMAGEN (LIGHTBOX) - GANA SOBRE TODO */
+#imageModal .modal-content {
+    margin: auto;
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 95vw !important;
+    max-height: 95vh !important;
+    object-fit: contain;
+    border-radius: 4px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    animation: zoom 0.6s;
+    background: transparent;
 
-/* Force Table Text in Modal to be White */
-#userModal th {
-    background-color: #212529 !important;
-    /* Cabecera oscura */
-    color: #D4AF37 !important;
-    /* Dorado */
-    border-bottom: 2px solid #D4AF37;
-    text-align: left;
-    padding: 12px;
-}
+    /* Dark Modal Stylization (Default Small for Login) */
+    .modal-content.login-content {
+        background-color: #343a40;
+        /* Modern Dark Grey */
+        margin: 15% auto;
+        /* Centered nicely */
+        padding: 30px;
+        border: 1px solid #6c757d;
+        /* Metallic Border */
+        width: 90%;
+        max-width: 380px;
+        /* SMALL LOGIN WINDOW */
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+        position: relative;
+        text-align: center;
+    }
 
-#userModal td {
-    color: #ffffff !important;
-    background-color: #343a40;
-    /* Cuerpo oscuro */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    text-align: left;
-    padding: 10px;
-}
+    /* Force Table Text in Modal to be White */
+    #userModal th {
+        background-color: #212529 !important;
+        /* Cabecera oscura */
+        color: #D4AF37 !important;
+        /* Dorado */
+        border-bottom: 2px solid #D4AF37;
+        text-align: left;
+        padding: 12px;
+    }
 
-/* Specific Override for User Management (Wide) */
-#userModal .modal-content {
-    max-width: 950px;
-    /* WIDE TABLE WINDOW */
-    margin: 5% auto;
-    text-align: left;
-    background-color: #212529;
-    /* Darker grey for data */
-}
+    #userModal td {
+        color: #ffffff !important;
+        background-color: #343a40;
+        /* Cuerpo oscuro */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: left;
+        padding: 10px;
+    }
 
-/* Force Table Text in Modal to be White */
-#userModal th,
-#userModal td {
-    color: #ffffff !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    text-align: left;
-}
+    /* Specific Override for User Management (Wide) */
+    #userModal .modal-content {
+        max-width: 950px;
+        /* WIDE TABLE WINDOW */
+        margin: 5% auto;
+        text-align: left;
+        background-color: #212529;
+        /* Darker grey for data */
+    }
 
-#userModal h2,
-#userModal h4 {
-    color: var(--accent-color);
-}
+    /* Force Table Text in Modal to be White */
+    #userModal th,
+    #userModal td {
+        color: #ffffff !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        text-align: left;
+    }
 
-/* Input fields (Global for Modals) */
-.modal-content input,
-.modal-content select {
-    background-color: #495057;
-    /* Light Metallic Grey Input */
-    color: white;
-    border: 1px solid #6c757d;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 10px;
-    margin-bottom: 15px;
-    border-radius: 6px;
-}
+    #userModal h2,
+    #userModal h4 {
+        color: var(--accent-color);
+    }
 
-/* Ensure Labels in Dark Modal are White */
-.modal-content label,
-.login-header h2,
-.login-header p {
-    color: #ffffff !important;
-    font-weight: 600;
-}
+    /* Input fields (Global for Modals) */
+    .modal-content input,
+    .modal-content select {
+        background-color: #495057;
+        /* Light Metallic Grey Input */
+        color: white;
+        border: 1px solid #6c757d;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 6px;
+    }
 
-.modal-content input::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-}
+    /* Ensure Labels in Dark Modal are White */
+    .modal-content label,
+    .login-header h2,
+    .login-header p {
+        color: #ffffff !important;
+        font-weight: 600;
+    }
 
-.dashboard-overlay {
-    z-index: 2000;
-    /* Above Main Header (1000), Below Modal (3000) */
-}
+    .modal-content input::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+    }
 
-/* Sidebar Items Custom Colors - ADDED PER REQUEST */
-#nav-tutelas {
-    transition: all 0.3s ease;
-    margin-bottom: 5px;
-    /* Spacing between buttons */
-    border-radius: 8px;
-    /* Rounded corners */
-    border-left: none;
-    /* Removing the border logic */
-}
+    .dashboard-overlay {
+        z-index: 2000;
+        /* Above Main Header (1000), Below Modal (3000) */
+    }
 
-#nav-tutelas:hover,
-#nav-tutelas.active {
-    background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%);
-    /* Sky Blue Gradient */
-    box-shadow: 0 4px 15px rgba(0, 180, 219, 0.4);
-    /* Glowing Sky Blue Shadow */
-    transform: translateX(5px);
-    /* Slide effect */
-}
+    /* Sidebar Items Custom Colors - ADDED PER REQUEST */
+    #nav-tutelas {
+        transition: all 0.3s ease;
+        margin-bottom: 5px;
+        /* Spacing between buttons */
+        border-radius: 8px;
+        /* Rounded corners */
+        border-left: none;
+        /* Removing the border logic */
+    }
 
-#nav-tutelas a {
-    color: rgba(255, 255, 255, 0.8);
-    transition: color 0.3s ease;
-}
+    #nav-tutelas:hover,
+    #nav-tutelas.active {
+        background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%);
+        /* Sky Blue Gradient */
+        box-shadow: 0 4px 15px rgba(0, 180, 219, 0.4);
+        /* Glowing Sky Blue Shadow */
+        transform: translateX(5px);
+        /* Slide effect */
+    }
 
-#nav-tutelas:hover a,
-#nav-tutelas.active a {
-    color: #ffffff;
-    font-weight: bold;
-    text-shadow: none;
-    /* Clean white text on dark bg */
-}
+    #nav-tutelas a {
+        color: rgba(255, 255, 255, 0.8);
+        transition: color 0.3s ease;
+    }
 
-/* Icon Color Override - Force White on Active/Hover */
-#nav-tutelas i {
-    color: #4da3ff;
-    transition: color 0.3s ease;
-}
+    #nav-tutelas:hover a,
+    #nav-tutelas.active a {
+        color: #ffffff;
+        font-weight: bold;
+        text-shadow: none;
+        /* Clean white text on dark bg */
+    }
 
-#nav-tutelas:hover i,
-#nav-tutelas.active i {
-    color: #ffffff;
-}
+    /* Icon Color Override - Force White on Active/Hover */
+    #nav-tutelas i {
+        color: #4da3ff;
+        transition: color 0.3s ease;
+    }
 
-#nav-demandas {
-    border-left: none;
-    transition: all 0.3s ease;
-    margin-bottom: 5px;
-    border-radius: 8px;
-}
+    #nav-tutelas:hover i,
+    #nav-tutelas.active i {
+        color: #ffffff;
+    }
 
-#nav-demandas:hover,
-#nav-demandas.active {
-    background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
-    /* Strong Green Fill */
-    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
-    /* Glowing Green Shadow */
-    transform: translateX(5px);
-}
+    #nav-demandas {
+        border-left: none;
+        transition: all 0.3s ease;
+        margin-bottom: 5px;
+        border-radius: 8px;
+    }
 
-#nav-demandas a {
-    color: rgba(255, 255, 255, 0.8);
-    transition: color 0.3s ease;
-}
+    #nav-demandas:hover,
+    #nav-demandas.active {
+        background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+        /* Strong Green Fill */
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+        /* Glowing Green Shadow */
+        transform: translateX(5px);
+    }
 
-#nav-demandas:hover a,
-#nav-demandas.active a {
-    color: #ffffff;
-    font-weight: bold;
-    text-shadow: none;
-}
+    #nav-demandas a {
+        color: rgba(255, 255, 255, 0.8);
+        transition: color 0.3s ease;
+    }
 
-/* Icon Color Override */
-#nav-demandas i {
-    color: #28a745;
-    transition: color 0.3s ease;
-}
+    #nav-demandas:hover a,
+    #nav-demandas.active a {
+        color: #ffffff;
+        font-weight: bold;
+        text-shadow: none;
+    }
 
-#nav-demandas:hover i,
-#nav-demandas.active i {
-    color: #ffffff;
-}
+    /* Icon Color Override */
+    #nav-demandas i {
+        color: #28a745;
+        transition: color 0.3s ease;
+    }
 
-/* PDF Import Banner Styles - Dynamic Colors */
-.pdf-import-banner {
-    padding: 20px;
-    border-radius: 12px;
-    border: 3px solid #e9ecef;
-    /* Default full border */
-    background: #ffffff;
-    transition: all 0.3s ease;
-    text-align: center;
-    margin-bottom: 2rem;
-}
+    #nav-demandas:hover i,
+    #nav-demandas.active i {
+        color: #ffffff;
+    }
 
-/* TUTELAS THEME */
-.pdf-banner-tutelas {
-    border-color: #00b4db;
-    /* Sky Blue Border */
-    box-shadow: 0 8px 20px rgba(0, 180, 219, 0.15);
-    background: linear-gradient(to bottom, #ffffff, rgba(0, 180, 219, 0.02));
-}
+    /* PDF Import Banner Styles - Dynamic Colors */
+    .pdf-import-banner {
+        padding: 20px;
+        border-radius: 12px;
+        border: 3px solid #e9ecef;
+        /* Default full border */
+        background: #ffffff;
+        transition: all 0.3s ease;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
 
-.pdf-banner-tutelas h5 i.fa-file-pdf {
-    color: #00b4db !important;
-    /* Icon Color */
-    font-size: 1.5rem !important;
-}
+    /* TUTELAS THEME */
+    .pdf-banner-tutelas {
+        border-color: #00b4db;
+        /* Sky Blue Border */
+        box-shadow: 0 8px 20px rgba(0, 180, 219, 0.15);
+        background: linear-gradient(to bottom, #ffffff, rgba(0, 180, 219, 0.02));
+    }
 
-.pdf-banner-tutelas button {
-    background-color: #00b4db !important;
-    /* Button Color */
-    color: white !important;
-    transition: transform 0.2s;
-}
+    .pdf-banner-tutelas h5 i.fa-file-pdf {
+        color: #00b4db !important;
+        /* Icon Color */
+        font-size: 1.5rem !important;
+    }
 
-.pdf-banner-tutelas button:hover {
-    transform: scale(1.05);
-    background-color: #0083b0 !important;
-}
+    .pdf-banner-tutelas button {
+        background-color: #00b4db !important;
+        /* Button Color */
+        color: white !important;
+        transition: transform 0.2s;
+    }
 
-/* DEMANDAS THEME */
-.pdf-banner-demandas {
-    border-color: #28a745;
-    /* Green Border */
-    box-shadow: 0 8px 20px rgba(40, 167, 69, 0.15);
-    background: linear-gradient(to bottom, #ffffff, rgba(40, 167, 69, 0.02));
-}
+    .pdf-banner-tutelas button:hover {
+        transform: scale(1.05);
+        background-color: #0083b0 !important;
+    }
 
-.pdf-banner-demandas h5 i.fa-file-pdf {
-    color: #28a745 !important;
-    /* Icon Color */
-    font-size: 1.5rem !important;
-}
+    /* DEMANDAS THEME */
+    .pdf-banner-demandas {
+        border-color: #28a745;
+        /* Green Border */
+        box-shadow: 0 8px 20px rgba(40, 167, 69, 0.15);
+        background: linear-gradient(to bottom, #ffffff, rgba(40, 167, 69, 0.02));
+    }
 
-.pdf-banner-demandas button {
-    background-color: #28a745 !important;
-    /* Button Color */
-    color: white !important;
-    transition: transform 0.2s;
-}
+    .pdf-banner-demandas h5 i.fa-file-pdf {
+        color: #28a745 !important;
+        /* Icon Color */
+        font-size: 1.5rem !important;
+    }
 
-.pdf-banner-demandas button:hover {
-    transform: scale(1.05);
-    background-color: #1e7e34 !important;
-}
+    .pdf-banner-demandas button {
+        background-color: #28a745 !important;
+        /* Button Color */
+        color: white !important;
+        transition: transform 0.2s;
+    }
 
-/* DYNAMIC FORM THEMES (Based on Module) */
+    .pdf-banner-demandas button:hover {
+        transform: scale(1.05);
+        background-color: #1e7e34 !important;
+    }
 
-/* TUTELAS THEME FORM */
-.theme-tutelas label {
-    color: #0083b0 !important;
-    /* Blue Label */
-    font-weight: bold;
-}
+    /* DYNAMIC FORM THEMES (Based on Module) */
 
-.theme-tutelas input,
-.theme-tutelas select,
-.theme-tutelas textarea {
-    border: 1px solid #b3e0ff;
-    color: #004884;
-    /* Blue Text */
-}
+    /* TUTELAS THEME FORM */
+    .theme-tutelas label {
+        color: #0083b0 !important;
+        /* Blue Label */
+        font-weight: bold;
+    }
 
-.theme-tutelas input::placeholder,
-.theme-tutelas textarea::placeholder {
-    color: #a8d4ff;
-}
+    .theme-tutelas input,
+    .theme-tutelas select,
+    .theme-tutelas textarea {
+        border: 1px solid #b3e0ff;
+        color: #004884;
+        /* Blue Text */
+    }
 
-.theme-tutelas input:focus,
-.theme-tutelas select:focus,
-.theme-tutelas textarea:focus {
-    border-color: #00b4db !important;
-    box-shadow: 0 0 0 3px rgba(0, 180, 219, 0.2);
-    /* Sky Blue Glow */
-}
+    .theme-tutelas input::placeholder,
+    .theme-tutelas textarea::placeholder {
+        color: #a8d4ff;
+    }
 
-/* DEMANDAS THEME FORM */
-.theme-demandas label {
-    color: #1e7e34 !important;
-    /* Green Label */
-    font-weight: bold;
-}
+    .theme-tutelas input:focus,
+    .theme-tutelas select:focus,
+    .theme-tutelas textarea:focus {
+        border-color: #00b4db !important;
+        box-shadow: 0 0 0 3px rgba(0, 180, 219, 0.2);
+        /* Sky Blue Glow */
+    }
 
-.theme-demandas input,
-.theme-demandas select,
-.theme-demandas textarea {
-    border: 1px solid #c3e6cb;
-    color: #155724;
-    /* Green Text */
-}
+    /* DEMANDAS THEME FORM */
+    .theme-demandas label {
+        color: #1e7e34 !important;
+        /* Green Label */
+        font-weight: bold;
+    }
 
-.theme-demandas input::placeholder,
-.theme-demandas textarea::placeholder {
-    color: #9fcdab;
-}
+    .theme-demandas input,
+    .theme-demandas select,
+    .theme-demandas textarea {
+        border: 1px solid #c3e6cb;
+        color: #155724;
+        /* Green Text */
+    }
 
-.theme-demandas input:focus,
-.theme-demandas select:focus,
-.theme-demandas textarea:focus {
-    border-color: #28a745 !important;
-    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
-    /* Green Glow */
-}
+    .theme-demandas input::placeholder,
+    .theme-demandas textarea::placeholder {
+        color: #9fcdab;
+    }
 
-/* Dynamic Total Badge Colors */
-.total-badge-tutelas {
-    background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%) !important;
-    box-shadow: 0 4px 15px rgba(0, 180, 219, 0.4) !important;
-}
+    .theme-demandas input:focus,
+    .theme-demandas select:focus,
+    .theme-demandas textarea:focus {
+        border-color: #28a745 !important;
+        box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
+        /* Green Glow */
+    }
 
-.total-badge-demandas {
-    background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%) !important;
-    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4) !important;
-}
+    /* Dynamic Total Badge Colors */
+    .total-badge-tutelas {
+        background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%) !important;
+        box-shadow: 0 4px 15px rgba(0, 180, 219, 0.4) !important;
+    }
 
-/* Creado por Jaiber Holguin - Header Credit */
-.header-credit {
-    width: 100%;
-    text-align: right;
-    font-size: 0.85rem;
-    color: #333;
-    /* Darker for visibility */
-    padding: 8px 3rem 0;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    background-color: var(--white);
-    display: block !important;
-    position: relative;
-    z-index: 2000;
-}
+    .total-badge-demandas {
+        background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%) !important;
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4) !important;
+    }
+
+    /* Creado por Jaiber Holguin - Header Credit */
+    .header-credit {
+        width: 100%;
+        text-align: right;
+        font-size: 0.85rem;
+        color: #333;
+        /* Darker for visibility */
+        padding: 8px 3rem 0;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        background-color: var(--white);
+        display: block !important;
+        position: relative;
+        z-index: 2000;
+    }
