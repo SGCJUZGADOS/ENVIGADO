@@ -1,0 +1,5 @@
+partes de la pagina
+
+lado izquierdo sidebar e items u opciones del menu
+
+Header del Dashboard (encabezado del panel de control).
