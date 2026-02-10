@@ -1,0 +1,40 @@
+LISTA OFICIAL DE JUZGADOS PARA IMPORTACIÓN MASIVA
+===================================================
+Instrucciones: Copie exactamente estos nombres en la columna "Juzgado Destino" de su archivo Excel.
+
+--- JUZGADOS CIVILES MUNICIPALES ---
+Juzgado Primero Civil Municipal de Envigado
+Juzgado Segundo Civil Municipal de Envigado
+Juzgado Tercero Civil Municipal de Envigado
+Juzgado Cuarto Civil Municipal de Envigado
+
+--- JUZGADOS CIVILES DEL CIRCUITO ---
+Juzgado Primero Civil del Circuito de Envigado
+Juzgado Segundo Civil del Circuito de Envigado
+Juzgado Tercero Civil del Circuito de Envigado
+
+--- JUZGADOS DE FAMILIA ---
+Juzgado Primero de Familia de Envigado
+Juzgado Segundo de Familia de Envigado
+
+--- JUZGADOS PENALES MUNICIPALES ---
+Juzgado Primero Penal Municipal de Envigado
+Juzgado Segundo Penal Municipal de Envigado
+Juzgado Tercero Penal Municipal de Envigado
+Juzgado Cuarto Penal Municipal de Envigado
+
+--- JUZGADOS PENALES DEL CIRCUITO ---
+Juzgado Primero Penal del Circuito de Envigado
+Juzgado Segundo Penal del Circuito de Envigado
+Juzgado Tercero Penal del Circuito de Envigado
+
+--- JUZGADOS PEQUEÑAS CAUSAS ---
+Juzgado Primero de Pequeñas Causas y Competencias Múltiples de Envigado
+Juzgado Segundo de Pequeñas Causas y Competencias Múltiples de Envigado
+
+--- JUZGADOS LABORALES ---
+Juzgado Primero Laboral del Circuito de Envigado
+Juzgado Segundo Laboral del Circuito de Envigado
+
+--- PROMISCUIOS (Si aplican) ---
+Juzgado Promiscuo Municipal de Envigado

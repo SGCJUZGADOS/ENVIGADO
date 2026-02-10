@@ -1,0 +1,50 @@
+(async function() {
+    // 1. PREGUNTAR AL USUARIO QUÉ BORRAR
+    const opcion = prompt("¿QUÉ DESEA BORRAR?\n\n1: Tutelas\n2: Demandas\n\n(Escriba 1 o 2)").trim();
+    
+    let colName = null;
+    if (opcion === "1") colName = "tutelas";
+    if (opcion === "2") colName = "demandas";
+    
+    if (!colName) { alert("Cancelado: Opción inválida."); return; }
+
+    // 2. CONFIRMACIÓN FINAL
+    if (!confirm(`⚠️ ALERTA EXTREMA ⚠️\n\nEstá a punto de borrar TODOS los registros de: ${colName.toUpperCase()}\n\nEsta acción NO SE PUEDE DESHACER.\n¿Continuar?`)) return;
+
+    console.log(`Borrando colección: ${colName}...`);
+    
+    // 3. CONSULTAR DOCUMENTOS
+    const snapshot = await db.collection(colName).get();
+    
+    if (snapshot.empty) {
+        alert(`La colección '${colName}' ya está vacía.`);
+        return;
+    }
+
+    console.log(`Documentos a borrar: ${snapshot.size}`);
+
+    // 4. BORRADO POR LOTES (Batch)
+    let batch = db.batch(), count = 0, total = 0;
+
+    for (const doc of snapshot.docs) {
+        batch.delete(doc.ref);
+        count++;
+        total++;
+
+        if (count >= 400) { // Safety limit Firestore
+            await batch.commit();
+            console.log(`... lote borrado (${total} regs)`);
+            batch = db.batch();
+            count = 0;
+        }
+    }
+    
+    // 5. FINALIZAR
+    if (count > 0) await batch.commit();
+
+    console.log("✅ TERMINADO.");
+    alert(`Listo. Se eliminaron ${total} registros de ${colName}.`);
+    
+    // 6. ACTUALIZAR VISTA (Si aplica)
+    if (typeof renderRealtimeTable === 'function') renderRealtimeTable([]);
+})();
