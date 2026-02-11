@@ -186,6 +186,24 @@ window.switchModule = function (moduleName) {
 
     currentCollection = moduleName;
 
+    // --- ROLE-BASED VISIBILITY FOR RADICADOR ---
+    const divJuzgadoDestino = document.getElementById('divJuzgadoDestino');
+    const role = (currentUser.role || '').toLowerCase();
+    const isRadicador = role.startsWith('radicador');
+
+    if (isRadicador && (moduleName === 'tutelas' || moduleName === 'demandas')) {
+        if (divJuzgadoDestino) divJuzgadoDestino.style.display = 'block';
+        // Only show PDF banner for Tutelas as it's the expected format for Acta de Reparto
+        if (pdfBanner && moduleName === 'tutelas') {
+            pdfBanner.style.display = 'block';
+        } else if (pdfBanner) {
+            pdfBanner.style.display = 'none';
+        }
+    } else {
+        if (divJuzgadoDestino) divJuzgadoDestino.style.display = 'none';
+        if (pdfBanner) pdfBanner.style.display = 'none';
+    }
+
     // Reset Form & Table State
     if (typeof resetForm === 'function') resetForm();
     globalTerminos = []; // Clear local cache
