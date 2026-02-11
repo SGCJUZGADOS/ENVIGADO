@@ -193,6 +193,13 @@ window.switchModule = function (moduleName) {
 
     if (isRadicador && (moduleName === 'tutelas' || moduleName === 'demandas')) {
         if (divJuzgadoDestino) divJuzgadoDestino.style.display = 'block';
+        // Hide non-essential fields for Radicador
+        const groupsToHide = ['group-fechaFallo', 'group-diaSiete', 'group-diaDiez', 'group-asignadoA', 'group-derecho', 'group-decision', 'group-genero', 'group-impugno'];
+        groupsToHide.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
+
         // Only show PDF banner for Tutelas as it's the expected format for Acta de Reparto
         if (pdfBanner && moduleName === 'tutelas') {
             pdfBanner.style.display = 'block';
@@ -202,6 +209,13 @@ window.switchModule = function (moduleName) {
     } else {
         if (divJuzgadoDestino) divJuzgadoDestino.style.display = 'none';
         if (pdfBanner) pdfBanner.style.display = 'none';
+
+        // Show fields for other roles
+        const groupsToShow = ['group-fechaFallo', 'group-diaSiete', 'group-diaDiez', 'group-asignadoA', 'group-derecho', 'group-decision', 'group-genero', 'group-impugno'];
+        groupsToShow.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'block';
+        });
     }
 
     // Reset Form & Table State

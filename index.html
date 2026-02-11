@@ -13,6 +13,9 @@
         rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Extra Styles -->
+    <link rel="stylesheet" href="modal_fix_snippet.css">
+    <link rel="stylesheet" href="survey_button_styles.css">
 </head>
 
 <body>
@@ -709,17 +712,17 @@
                                     oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group" id="group-fechaFallo">
                                 <label>Fecha Fallo (Sentencia)</label>
                                 <input type="date" id="fechaNotificacion" class="form-control">
                             </div>
                             <!-- Campos Calculados -->
-                            <div class="form-group">
+                            <div class="form-group" id="group-diaSiete">
                                 <label>Día Siete (Límite)</label>
                                 <input type="date" id="diaSiete" class="form-control" readonly
                                     style="background-color: #f0f0f0;">
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" id="group-diaDiez">
                                 <label>Día Diez (Límite)</label>
                                 <input type="date" id="diaDiez" class="form-control" readonly
                                     style="background-color: #f0f0f0;">
@@ -732,11 +735,11 @@
                                     <option value="Rojo">Vencido</option>
                                 </select>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" id="group-asignadoA">
                                 <label>Asignado A</label>
                                 <input type="text" id="asignadoA" class="form-control" placeholder="Nombre funcionario">
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" id="group-derecho">
                                 <label>Derecho Vulnerado</label>
                                 <select id="derecho" class="form-control" required>
                                     <option value="">Seleccione...</option>
@@ -775,7 +778,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group" id="group-decision">
                                 <label>Decisión de Fondo</label>
                                 <select id="decision" class="form-control">
                                     <option value="">Pendiente...</option>
@@ -792,7 +795,7 @@
                                     <option value="OTRO">OTRO</option>
                                 </select>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" id="group-genero">
                                 <label>Perspectiva de Género</label>
                                 <select id="genero" class="form-control">
                                     <option value="">Seleccione...</option>
@@ -800,7 +803,7 @@
                                     <option value="SI">SÍ</option>
                                 </select>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" id="group-impugno">
                                 <label>¿Impugnó?</label>
                                 <select id="impugno" class="form-control">
                                     <option value="">Seleccione...</option>
@@ -809,7 +812,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group" style="grid-column: 1 / -1;">
+                            <div class="form-group">
                                 <label>Observaciones</label>
                                 <textarea id="observaciones" class="form-control" rows="3"
                                     placeholder="Comentarios adicionales... (Opcional)"></textarea>
