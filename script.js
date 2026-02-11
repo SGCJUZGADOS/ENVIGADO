@@ -12,6 +12,7 @@ const firebaseConfig = {
 
 let db = null;
 let auth = null;
+let currentUser = {}; // Master User object
 // DEFAULT MODULE
 let currentCollection = "tutelas";
 
@@ -793,6 +794,37 @@ window.handleLogin = function (e) {
         console.error("Login Error:", error);
         alert("Error de conexión: " + error.message);
     });
+}
+
+// ==========================================
+// UNIFIED DASHBOARD ENTRY
+// ==========================================
+window.enterDashboard = function () {
+    const loginModal = document.getElementById("loginModal");
+    const dashboard = document.getElementById("dashboard");
+    const welcomeMsg = document.getElementById("welcomeMsg");
+    const sidebarBtnUsers = document.getElementById("sidebarBtnUsers");
+
+    if (loginModal) loginModal.style.display = "none";
+    if (dashboard) dashboard.style.display = "flex";
+
+    if (welcomeMsg && currentUser) {
+        welcomeMsg.innerHTML = `<i class="fas fa-user-circle"></i> Hola, ${currentUser.username || 'Funcionario'}`;
+    }
+
+    // Role-based Sidebar visibility
+    if (sidebarBtnUsers) {
+        if (currentUser.role === 'admin') {
+            sidebarBtnUsers.style.display = 'block';
+        } else {
+            sidebarBtnUsers.style.display = 'none';
+        }
+    }
+
+    // Default view: Tutelas
+    if (typeof window.switchModule === 'function') {
+        window.switchModule('tutelas');
+    }
 }
 
 window.logout = function () {
@@ -1814,36 +1846,7 @@ window.deleteTermino = function (id) {
 }
 
 
-// ==========================================
-// UNIFIED DASHBOARD ENTRY
-// ==========================================
-window.enterDashboard = function () {
-    const loginModal = document.getElementById("loginModal");
-    const dashboard = document.getElementById("dashboard");
-    const welcomeMsg = document.getElementById("welcomeMsg");
-    const sidebarBtnUsers = document.getElementById("sidebarBtnUsers");
-
-    if (loginModal) loginModal.style.display = "none";
-    if (dashboard) dashboard.style.display = "flex";
-
-    if (welcomeMsg && currentUser) {
-        welcomeMsg.innerHTML = `<i class="fas fa-user-circle"></i> Hola, ${currentUser.username || 'Funcionario'}`;
-    }
-
-    // Role-based Sidebar visibility
-    if (sidebarBtnUsers) {
-        if (currentUser.role === 'admin') {
-            sidebarBtnUsers.style.display = 'block';
-        } else {
-            sidebarBtnUsers.style.display = 'none';
-        }
-    }
-
-    // Default view: Tutelas
-    if (typeof window.switchModule === 'function') {
-        window.switchModule('tutelas');
-    }
-}
+// function enterDashboard() moved up for safety
 
 // ==========================================
 // LOGICA DE FECHAS Y DÍAS HÁBILES (COLOMBIA)
