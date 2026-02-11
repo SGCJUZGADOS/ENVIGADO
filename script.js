@@ -12,7 +12,8 @@ const firebaseConfig = {
 
 let db = null;
 let auth = null;
-let currentCollection = "tutelas"; // Default Module
+// DEFAULT MODULE
+let currentCollection = "tutelas";
 
 // LISTA MAESTRA DE JUZGADOS ENVIGADO (Fuente de Verdad - Actualizada)
 const initialJuzgadosData = [
@@ -61,6 +62,16 @@ window.switchModule = function (moduleName) {
     // 1. UPDATE SIDEBAR ACTIVE STATE
     document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
 
+    // --- AUTO-EXPAND SIDEBAR ON CLICK ---
+    const sidebar = document.querySelector('.dashboard-sidebar');
+    if (sidebar) {
+        if (window.innerWidth <= 768) {
+            sidebar.classList.add('open');
+        } else {
+            sidebar.classList.remove('collapsed');
+        }
+    }
+
     // 2. TOGGLE VIEW CONTAINERS & UPDATE HEADER STYLE
     const mainContainer = document.getElementById('main-dash-container');
     const statsContainer = document.getElementById('statistics-section');
@@ -70,7 +81,7 @@ window.switchModule = function (moduleName) {
     const formEl = document.getElementById('terminosForm');
 
     // Reset Header & Banner Classes
-    dashHeader.classList.remove('header-tutelas', 'header-demandas');
+    if (dashHeader) dashHeader.classList.remove('header-tutelas', 'header-demandas');
     if (pdfBanner) pdfBanner.classList.remove('pdf-banner-tutelas', 'pdf-banner-demandas');
     // Reset Form Theme
     if (formEl) formEl.classList.remove('theme-tutelas', 'theme-demandas');
@@ -93,7 +104,7 @@ window.switchModule = function (moduleName) {
         const navItem = document.getElementById('sidebarBtnUsers');
         if (navItem) navItem.classList.add('active');
 
-        headerTitle.innerHTML = '<i class="fas fa-users-cog"></i> GESTIÓN DE USUARIOS';
+        if (headerTitle) headerTitle.innerHTML = '<i class="fas fa-users-cog"></i> GESTIÓN DE USUARIOS';
 
         if (usersContainer) {
             usersContainer.style.display = 'block';
@@ -105,11 +116,12 @@ window.switchModule = function (moduleName) {
     }
 
     if (moduleName === 'estadisticas') {
-        document.getElementById('nav-estadisticas').classList.add('active');
-        // headerTitle.textContent = "Estadísticas de Gestión"; // Keep simple or dynamic?
-        headerTitle.innerHTML = '<i class="fas fa-chart-pie"></i> ESTADÍSTICAS DE GESTIÓN';
+        const navEst = document.getElementById('nav-estadisticas');
+        if (navEst) navEst.classList.add('active');
+        if (headerTitle) headerTitle.innerHTML = '<i class="fas fa-chart-pie"></i> ESTADÍSTICAS DE GESTIÓN';
 
         if (statsContainer) statsContainer.style.display = 'block';
+        if (typeof window.updateStatistics === 'function') window.updateStatistics();
         return;
     }
 
@@ -117,12 +129,11 @@ window.switchModule = function (moduleName) {
         const navItem = document.getElementById('nav-estadisticas-tutelas');
         if (navItem) navItem.classList.add('active');
 
-        headerTitle.innerHTML = '<i class="fas fa-table"></i> MATRIZ - ENTRADA TUTELAS';
+        if (headerTitle) headerTitle.innerHTML = '<i class="fas fa-table"></i> MATRIZ - ENTRADA TUTELAS';
 
         const matrixContainer = document.getElementById('estadisticas-tutelas-section');
         if (matrixContainer) {
             matrixContainer.style.display = 'block';
-            // Trigger calculation
             if (typeof window.updateMatrixStatistics === 'function') {
                 window.updateMatrixStatistics();
             }
@@ -134,10 +145,13 @@ window.switchModule = function (moduleName) {
     if (mainContainer) mainContainer.style.display = 'grid'; // Restore grid layout
 
     if (moduleName === 'tutelas') {
-        document.getElementById('nav-tutelas').classList.add('active');
-        headerTitle.innerHTML = '<i class="fas fa-balance-scale"></i> SEGUIMIENTO A TÉRMINOS TUTELAS';
-        headerTitle.style.color = '#004884'; // Blue text
-        dashHeader.classList.add('header-tutelas'); // Apply Blue Border/Shadow
+        const navTut = document.getElementById('nav-tutelas');
+        if (navTut) navTut.classList.add('active');
+        if (headerTitle) {
+            headerTitle.innerHTML = '<i class="fas fa-balance-scale"></i> SEGUIMIENTO A TÉRMINOS TUTELAS';
+            headerTitle.style.color = '#004884'; // Blue text
+        }
+        if (dashHeader) dashHeader.classList.add('header-tutelas'); // Apply Blue Border/Shadow
         if (pdfBanner) pdfBanner.classList.add('pdf-banner-tutelas');
         if (formEl) formEl.classList.add('theme-tutelas');
 
@@ -150,10 +164,13 @@ window.switchModule = function (moduleName) {
         if (badgeEl) badgeEl.classList.add('total-badge-tutelas');
 
     } else if (moduleName === 'demandas') {
-        document.getElementById('nav-demandas').classList.add('active');
-        headerTitle.innerHTML = '<i class="fas fa-gavel"></i> SEGUIMIENTO A TÉRMINOS DEMANDAS';
-        headerTitle.style.color = '#28a745'; // Green text
-        dashHeader.classList.add('header-demandas'); // Apply Green Border/Shadow
+        const navDem = document.getElementById('nav-demandas');
+        if (navDem) navDem.classList.add('active');
+        if (headerTitle) {
+            headerTitle.innerHTML = '<i class="fas fa-gavel"></i> SEGUIMIENTO A TÉRMINOS DEMANDAS';
+            headerTitle.style.color = '#28a745'; // Green text
+        }
+        if (dashHeader) dashHeader.classList.add('header-demandas'); // Apply Green Border/Shadow
         if (pdfBanner) pdfBanner.classList.add('pdf-banner-demandas');
         if (formEl) formEl.classList.add('theme-demandas');
 
@@ -168,12 +185,10 @@ window.switchModule = function (moduleName) {
 
     currentCollection = moduleName;
 
-    currentCollection = moduleName;
-
     // Reset Form & Table State
-    resetForm();
+    if (typeof resetForm === 'function') resetForm();
     globalTerminos = []; // Clear local cache
-    renderRealtimeTable([]); // clear view immediately
+    if (typeof renderRealtimeTable === 'function') renderRealtimeTable([]); // clear view immediately
 
     console.log("Switched to module:", currentCollection);
 
@@ -1602,10 +1617,10 @@ function renderRealtimeTable(terminos) {
                 <th>Fecha Reparto</th>
                 <th>Accionante</th>
                 <th>Doc. Id. Accionante</th>
-                <th>Accionado</th>
-                <th>Doc. Id. Accionado</th>
-                <th>Derecho Vulnerado</th>
-                <th>Observaciones</th>
+                <th style="min-width: 150px;">Accionado</th>
+                <th style="min-width: 120px;">Doc. Id. Accionado</th>
+                <th style="max-width: 150px;">Derecho Vulnerado</th>
+                <th style="max-width: 150px;">Observaciones</th>
                 <th style="min-width: 100px;">Acciones</th>
             </tr>
         `;
@@ -1635,8 +1650,10 @@ function renderRealtimeTable(terminos) {
                     <td>${item.idAccionante || '-'}</td>
                     <td>${item.accionado || '-'}</td>
                     <td>${item.idAccionado || '-'}</td>
-                    <td>${item.derecho || '-'}</td>
-                    <td><small>${item.observaciones || '-'}</small></td>
+                    <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${item.derecho || ''}">${item.derecho || '-'}</td>
+                    <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${item.observaciones || ''}">
+                        <small>${item.observaciones || '-'}</small>
+                    </td>
                     <td>
                         <button class="btn-sm btn-info" onclick="editTermino('${item.id}')" title="Editar">
                             <i class="fas fa-edit"></i>
@@ -1668,7 +1685,7 @@ function renderRealtimeTable(terminos) {
                 <th>¿Cumplió?</th>
                 <th>Alerta</th>
                 <th>Decisión</th>
-                <th>Derecho</th>
+                <th style="max-width: 120px;">Derecho</th>
                 <th>Género</th>
                 <th>Impugnó</th>
                 <th style="min-width: 100px;">Acciones</th>
@@ -1725,7 +1742,7 @@ function renderRealtimeTable(terminos) {
                     <td>${cumplioHtml}</td>
                     <td>${badgeHtml}</td>
                     <td>${item.decision || '-'}</td>
-                    <td>${item.derecho || '-'}</td>
+                    <td style="max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${item.derecho || ''}">${item.derecho || '-'}</td>
                     <td>${item.genero || '-'}</td>
                     <td>${item.impugno || '-'}</td>
                     <td>
@@ -1817,406 +1834,7 @@ window.deleteTermino = function (id) {
 }
 
 
-// Initial Load of Data when dashboard opens
-const originalHandleLogin = window.handleLogin;
-// Global User State
-let currentUser = {
-    username: '',
-    role: '',
-    juzgado: ''
-};
-
-// COMPATIBILITY: Keep old variable for older logic references
-let currentUserRole = '';
-
-// LOGIN MODAL LOGIC
-window.openLoginModal = function () {
-    console.log("Opening login modal...");
-    const modal = document.getElementById('loginModal');
-    if (modal) {
-        modal.style.display = 'block';
-        document.getElementById("loginForm").reset(); // Clear previous attempts
-    } else {
-        console.error("Login modal not found!");
-    }
-}
-
-window.closeLoginModal = function () {
-    const modal = document.getElementById('loginModal');
-    if (modal) modal.style.display = 'none';
-}
-
-window.handleLogin = function (e) {
-    e.preventDefault();
-    const user = document.getElementById("username").value.toLowerCase().trim();
-    const pass = document.getElementById("password").value.trim();
-
-    if (!user || !pass) {
-        alert("Por favor ingrese usuario y contraseña.");
-        return;
-    }
-
-    const loginBtn = document.querySelector("#loginForm button");
-    const originalBtnText = loginBtn ? loginBtn.innerHTML : "Ingresar";
-    if (loginBtn) {
-        loginBtn.disabled = true;
-        loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
-    }
-
-    // 1. PRIMERO CONSULTAR BASE DE DATOS (La fuente de verdad)
-    db.collection("users").doc(user).get().then((doc) => {
-        let authSuccess = false;
-        let userData = null;
-
-        if (doc.exists) {
-            // Usuario existe en BD -> Validar contraseña DE LA BD
-            const data = doc.data();
-            if (data.password && data.password === pass) {
-                authSuccess = true;
-                userData = data;
-                // Parche de seguridad: Asegurarse de que tenga rol
-                if (!userData.role) userData.role = 'user';
-            } else {
-                // Contraseña incorrecta para usuario existente
-                alert("⛔ Contraseña incorrecta.");
-            }
-        } else {
-            // Usuario NO existe en BD -> Verificar Fallback Hardcoded
-            // Esto solo debería pasar la primera vez antes de que se creen los usuarios en BD
-            if (user === "admin" && pass === "123") {
-                authSuccess = true;
-                userData = { username: 'admin', role: 'admin', juzgado: 'Todos', hasVacancia: false };
-                console.warn("⚠️ Login usando Fallback Admin (Recomendado cambiar clave para crear registro en BD)");
-            } else {
-                alert("⛔ Usuario no encontrado.");
-            }
-        }
-
-        if (authSuccess && userData) {
-            currentUser = {
-                username: userData.username || user,
-                role: userData.role,
-                juzgado: userData.juzgado || 'Juzgado X',
-                hasVacancia: userData.hasVacancia || false,
-                password: userData.password || pass // Guardar para validación de cambio de clave
-            };
-
-            currentUserRole = currentUser.role; // Compatibilidad legacy
-            localStorage.setItem('sgc_user', JSON.stringify(currentUser)); // Guardar sesión
-
-            // Auto-heal: Si es admin fallback, crearlo en BD silenciosamente si se desea, 
-            // pero mejor dejar que el usuario cambie su clave explícitamente.
-
-            window.enterDashboard();
-        }
-
-    }).catch((error) => {
-        console.error("Login Error:", error);
-        alert("Error durante el inicio de sesión: " + (error.message || error));
-    }).finally(() => {
-        if (loginBtn) {
-            loginBtn.disabled = false;
-            loginBtn.innerHTML = originalBtnText;
-        }
-    });
-}
-
-window.enterDashboard = function () {
-    try {
-        document.getElementById("loginModal").style.display = "none";
-        document.getElementById("dashboard").style.display = "flex";
-        document.getElementById("loginForm").reset();
-
-        // UI Updates based on Role (Enhanced from V2)
-        const msgEl = document.getElementById("welcomeMsg");
-        if (msgEl && currentUser) {
-            // Determine friendly name
-            let displayName = currentUser.username.toUpperCase();
-            // If user is NOT admin/radicador, try to show the full Juzgado Name
-            if (currentUser.role !== 'admin' && !currentUser.role.startsWith('radicador')) {
-                if (currentUser.juzgado && currentUser.juzgado.length > 5 && currentUser.juzgado.toLowerCase() !== 'todos') {
-                    displayName = currentUser.juzgado; // Use full name
-                }
-            }
-            msgEl.innerHTML = `Hola, <span style="font-size: 0.9em; font-weight: bold;">${displayName}</span> <span class="badge badge-light">${currentUser.role || 'User'}</span>`;
-        }
-
-        // VISIBILITY LOGIC:
-        // 1. ADMIN / RADICADOR: See EVERYTHING (Users, Stats Charts, Global Matrix)
-        if (currentUser.role === 'admin' || currentUser.role.startsWith('radicador')) {
-            document.getElementById('sidebarBtnUsers').style.display = (currentUser.role === 'admin') ? 'block' : 'none';
-            document.getElementById('nav-estadisticas').style.display = 'block'; // General Charts
-        } else {
-            // 2. JUZGADOS (Standard Users):
-            // - NO User Mgmt
-            // - NO General Charts (Global Stats)
-            document.getElementById('sidebarBtnUsers').style.display = 'none';
-            document.getElementById('nav-estadisticas').style.display = 'none';
-        }
-
-        // 3. MATRIX STATISTICS (Estadística Tutelas)
-        // VISIBLE FOR EVERYONE (Filtered by role automatically via globalTerminos)
-        const navEstTutelas = document.getElementById('nav-estadisticas-tutelas');
-        if (navEstTutelas) navEstTutelas.style.display = 'block';
-
-        // ROLE BASED VISIBILITY (SIDEBAR)
-        const navTutelas = document.getElementById('nav-tutelas');
-        const navDemandas = document.getElementById('nav-demandas');
-
-        // Default Visibility
-        navTutelas.style.display = 'block';
-        navDemandas.style.display = 'block';
-
-        if (currentUser.role === 'radicador_tutelas') {
-            navDemandas.style.display = 'none';
-            switchModule('tutelas'); // Force context
-        } else if (currentUser.role === 'radicador_demandas') {
-            navTutelas.style.display = 'none';
-            switchModule('demandas'); // Force context
-        } else {
-            // Admin, User, Radicador (Total) -> See Both usually
-            // But we default to Tutelas
-            switchModule('tutelas');
-        }
-
-        // Initialize Realtime Data (Will apply filters)
-        setupRealtimeUpdates();
-
-        // CARGAR SELECTS DE JUZGADOS (Formulario Radicación y Filtro Tabla)
-        if (typeof window.loadJuzgadosIntoSelect === 'function') {
-            window.loadJuzgadosIntoSelect();
-        }
-
-        // PDF INJECTION LOGIC (From V2)
-        const isRadOrAdmin = currentUser && (currentUser.role === 'admin' || currentUser.role.startsWith('radicador'));
-        let pdfCont = document.getElementById('pdfImportContainer');
-
-        // AUTO-HEAL: If container missing but user is Admin/Radicador, inject it.
-        if (!pdfCont && isRadOrAdmin) {
-            console.warn("DEBUG: PDF Container missing. Injecting it now...");
-            // Find insertion point (before form)
-            const formCard = document.querySelector('.data-form-card');
-            const form = document.getElementById('terminosForm');
-            if (formCard && form) {
-                const div = document.createElement('div');
-                div.id = "pdfImportContainer";
-                div.style.cssText = "margin-bottom: 2rem; background: #e9ecef; padding: 15px; border-radius: 8px; border-left: 5px solid #D4AF37;";
-                div.innerHTML = `
-                <h5 style="margin-bottom: 10px; color: #333; font-weight: bold;"><i class="fas fa-file-pdf" style="color: #dc3545; font-size: 1.2rem;"></i> Carga Automática (Acta de Reparto)</h5>
-                <p style="font-size: 0.9rem; margin-bottom: 10px; color: #666;">Seleccione el archivo PDF del acta de reparto para diligenciar automáticamente el formulario.</p>
-                <button type="button" class="btn-sm" style="background-color: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold;" onclick="document.getElementById('actaPdfInput').click()">
-                    <i class="fas fa-upload"></i> Seleccionar Acta PDF
-                </button>
-                <input type="file" id="actaPdfInput" accept=".pdf" style="display:none" onchange="window.processActaPDF(this)">
-                <span id="pdfStatus" style="margin-left: 10px; font-weight: bold; color: #dc3545;"></span>
-            `;
-                formCard.insertBefore(div, form);
-                pdfCont = div; // Update reference
-                console.log("DEBUG: PDF Container Injected Successfully.");
-            }
-        }
-
-        if (pdfCont) {
-            pdfCont.style.setProperty('display', isRadOrAdmin ? 'block' : 'none', 'important');
-        }
-
-        // UI Updates for Admin/Radicador (ANY TYPE)
-        if (currentUser.role === 'admin' || currentUser.role.startsWith('radicador')) {
-            // Show juzgado select if applicable
-            const divJuzgado = document.getElementById('divJuzgadoDestino');
-            const juzgadoInput = document.getElementById('juzgadoDestino');
-
-            if (divJuzgado) divJuzgado.style.display = 'block';
-
-            if (juzgadoInput) {
-                juzgadoInput.setAttribute('required', 'true');
-                if (typeof window.loadJuzgadosIntoSelect === 'function') {
-                    window.loadJuzgadosIntoSelect(); // Load Async from Master List
-                }
-            }
-
-            const filterCumplio = document.getElementById('filterCumplio');
-            if (filterCumplio) filterCumplio.style.display = 'none'; // ocultar filtro
-        }
-
-        // LOGICA RADICADOR:
-        if (currentUser.role.startsWith('radicador')) {
-            // 1. Fecha Reparto = HOY y Bloqueada
-            const fReparto = document.getElementById('fechaReparto');
-            if (fReparto) {
-                const hoy = new Date().toISOString().split('T')[0];
-                fReparto.value = hoy;
-                fReparto.setAttribute('readonly', 'true');
-                fReparto.style.backgroundColor = "#e9ecef"; // Visualmente bloqueado
-            }
-            // OCULTAR CAMPOS QUE EL RADICADOR NO LLENA
-            // Added 'derecho' back to hidden list as requested
-            ['fechaNotificacion', 'asignadoA', 'derecho', 'decision', 'genero', 'impugno', 'diaSiete', 'diaDiez', 'diaDiez', 'colFallo', 'colDia10', 'colCumplio', 'colAlerta', 'colDecision', 'colGenero', 'colImpugno'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) {
-                    if (el.tagName === 'TH') {
-                        el.style.display = 'none';
-                    } else if (el.parentElement && el.parentElement.classList.contains('form-group')) {
-                        el.parentElement.style.display = 'none';
-                    } else {
-                        el.style.display = 'none';
-                    }
-                }
-            });
-
-            // REMOVE REQUIRED FROM HIDDEN FIELDS (CRITICAL FIX)
-            const derechoInput = document.getElementById('derecho');
-            if (derechoInput) derechoInput.removeAttribute('required');
-
-        } else {
-            // LOGICA PARA OTROS ROLES (NO RADICADOR)
-            const divJuzgado = document.getElementById('divJuzgadoDestino');
-            if (divJuzgado) divJuzgado.style.display = 'none';
-
-            // Ocultar BOTÓN IMPORTAR EXCEL si es usuario Juzgado (Solo Admin/Radicadores pueden)
-            const importBtn = document.getElementById('importBtn');
-            if (importBtn) {
-                if (currentUser.role === 'admin' || currentUser.role.startsWith('radicador')) {
-                    importBtn.style.display = 'inline-block';
-                } else {
-                    importBtn.style.display = 'none';
-                }
-            }
-
-            const filterCumplio = document.getElementById('filterCumplio');
-            if (filterCumplio) filterCumplio.style.display = 'block'; // mostrar filtro
-
-            const juzgadoInput = document.getElementById('juzgadoDestino');
-            if (juzgadoInput) juzgadoInput.removeAttribute('required');
-
-            // Restaurar Fecha Reparto
-            const fReparto = document.getElementById('fechaReparto');
-            if (fReparto) {
-                fReparto.removeAttribute('readonly');
-                fReparto.style.backgroundColor = "";
-            }
-
-            // RESTORE REQUIRED FOR JUZGADOS
-            const derechoInput = document.getElementById('derecho');
-            if (derechoInput) derechoInput.setAttribute('required', 'true');
-
-            // MOSTRAR TODOS LOS CAMPOS
-            ['fechaNotificacion', 'asignadoA', 'derecho', 'decision', 'genero', 'impugno', 'diaSiete', 'diaDiez'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el && el.parentElement) el.parentElement.style.display = 'block';
-            });
-
-            // LISTENER DE "OTRO DERECHO" (Solo visible para juzgados/admin)
-            const derechoSelect = document.getElementById('derecho');
-            const derechoOtroInput = document.getElementById('derechoOtro');
-            if (derechoSelect && derechoOtroInput) {
-                // Assign handler
-                derechoSelect.onchange = function () {
-                    if (this.value === 'Otro') {
-                        derechoOtroInput.style.display = 'block';
-                        derechoOtroInput.required = true;
-                    } else {
-                        derechoOtroInput.style.display = 'none';
-                        derechoOtroInput.value = ''; // Reset
-                        derechoOtroInput.required = false;
-                    }
-                };
-            }
-        }
-
-        // CAMBIO DE PREFIJO SEGÚN JUZGADO (Listener)
-        const juzgadoSelect = document.getElementById('juzgadoDestino');
-        if (juzgadoSelect) {
-            juzgadoSelect.onchange = function () {
-                const selectedOption = this.options[this.selectedIndex];
-                const codigo = selectedOption.getAttribute('data-codigo') || "052664003001";
-                const prefixEl = document.getElementById('radicadoPrefix');
-                if (prefixEl) prefixEl.textContent = codigo;
-            };
-        }
-    } catch (error) {
-        console.error("Error inside enterDashboard:", error);
-        alert("Error cargando el panel: " + error.message);
-    }
-}
-
-
-// USER MANAGEMENT FUNCTIONS
-window.openUserModal = function () {
-    document.getElementById('userModal').style.display = 'block';
-    renderUserList();
-}
-window.closeUserModal = function () {
-    document.getElementById('userModal').style.display = 'none';
-}
-
-window.toggleJuzgadoInput = function () {
-    const role = document.getElementById('newRole').value;
-    const input = document.getElementById('newJuzgado');
-    if (role === 'admin') {
-        input.value = 'Todos';
-        input.disabled = true;
-    } else {
-        input.value = '';
-        input.disabled = false;
-        input.placeholder = "Nombre Juzgado (ej: Juzgado 05)";
-    }
-}
-
-window.handleCreateUser = function (e) {
-    e.preventDefault();
-    const username = document.getElementById('newUsername').value.toLowerCase().trim();
-    const password = document.getElementById('newPassword').value;
-    const role = document.getElementById('newRole').value;
-    let juzgado = document.getElementById('newJuzgado').value;
-
-    const hasVacancia = document.getElementById('newVacancia').checked;
-
-    if (role === 'admin') juzgado = 'Todos';
-    if (!username || !password) return;
-
-    db.collection("users").doc(username).set({
-        username,
-        password, // Note: Plain text for prototype request
-        role,
-        juzgado,
-        hasVacancia, // Save Preference
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    }).then(() => {
-        alert("✅ Usuario creado exitosamente");
-        document.getElementById('userForm').reset();
-    }).catch((error) => {
-        alert("Error creando usuario: " + error.message);
-    });
-}
-
-function renderUserList() {
-    db.collection("users").onSnapshot((snapshot) => {
-        const tbody = document.getElementById('userListBody');
-        tbody.innerHTML = '';
-        snapshot.forEach((doc) => {
-            const user = doc.data();
-            tbody.innerHTML += `
-            <tr>
-                <td style="color:white;">${user.username}</td>
-                <td style="color:white;">${user.role === 'admin' ? '<span class="badge badge-primary">Admin</span>' : 'Usuario'}</td>
-                <td style="color:white;">${user.juzgado}</td>
-                <td>
-                    <button class="btn-sm btn-danger" onclick="deleteUser('${doc.id}')" title="Borrar Usuario">
-                        <i class="fas fa-trash" style="color: white !important;"></i>
-                    </button>
-                </td>
-            </tr>
-            `;
-        });
-    });
-}
-
-window.deleteUser = function (id) {
-    if (confirm("¿Borrar usuario?")) {
-        db.collection("users").doc(id).delete();
-    }
-}
+// (The master version of login and dashboard logic is already defined above)
 
 // ==========================================
 // LOGICA DE FECHAS Y DÍAS HÁBILES (COLOMBIA)
