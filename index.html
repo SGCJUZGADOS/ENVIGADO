@@ -6,8 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SGC | Juzgados de Envigado</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="sidebar_styles.css">
     <!-- Google Fonts -->
-    <link <!-- Font Awesome -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800;900&family=Open+Sans:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
@@ -347,66 +351,76 @@
                         <input type="password" id="password" placeholder="Ingrese su contraseña" required>
                     </div>
                 </div>
-                <button type="submit" class="btn-primary">Ingresar</button>
+                <button type="submit" class="btn-premium-login">Ingresar</button>
             </form>
         </div>
     </div>
 
     <!-- Dashboard Section (Hidden by default) -->
     <div id="dashboard" class="dashboard-overlay" style="display: none;">
-        <div class="dashboard-sidebar">
+        <div class="dashboard-sidebar collapsed">
             <div class="sidebar-header">
                 <h3>SGC Envigado</h3>
                 <p>Panel de Control</p>
+                <button class="sidebar-toggle-btn" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
             <ul class="sidebar-menu">
                 <li class="active" id="nav-tutelas">
-                    <a href="javascript:void(0)" onclick="switchModule('tutelas')"><i
-                            class="fas fa-balance-scale-right"></i> Seguimiento a Términos Tutelas</a>
+                    <a href="javascript:void(0)" onclick="switchModule('tutelas')">
+                        <i class="fas fa-balance-scale-right"></i> <span>Seguimiento a Términos Tutelas</span>
+                    </a>
                 </li>
                 <li id="nav-demandas">
-                    <a href="javascript:void(0)" onclick="switchModule('demandas')"><i class="fas fa-gavel"></i>
-                        Seguimiento a Términos Demandas</a>
+                    <a href="javascript:void(0)" onclick="switchModule('demandas')">
+                        <i class="fas fa-gavel"></i> <span>Seguimiento a Términos Demandas</span>
+                    </a>
                 </li>
                 <li id="nav-estadisticas">
-                    <a href="javascript:void(0)" onclick="switchModule('estadisticas')"><i class="fas fa-chart-pie"></i>
-                        Estadísticas</a>
+                    <a href="javascript:void(0)" onclick="switchModule('estadisticas')">
+                        <i class="fas fa-chart-pie"></i> <span>Estadísticas</span>
+                    </a>
                 </li>
-                <!-- NEW SIDEBAR ITEM -->
                 <li id="nav-estadisticas-tutelas">
-                    <a href="javascript:void(0)" onclick="switchModule('estadisticas_tutelas')"><i
-                            class="fas fa-table"></i>
-                        Estadística Tutelas</a>
+                    <a href="javascript:void(0)" onclick="switchModule('estadisticas_tutelas')">
+                        <i class="fas fa-table"></i> <span>Estadística Tutelas</span>
+                    </a>
                 </li>
                 <li id="sidebarBtnUsers" style="display:none;">
-                    <a href="javascript:void(0)" onclick="openUserModal(event); return false;"><i
-                            class="fas fa-users-cog"></i> Gestión Usuarios</a>
+                    <a href="javascript:void(0)" onclick="switchModule('users')">
+                        <i class="fas fa-users-cog"></i> <span>Gestión Usuarios</span>
+                    </a>
                 </li>
                 <li>
-                    <a href="javascript:void(0)" onclick="openChangePasswordModal(); return false;"><i
-                            class="fas fa-key"></i> Cambiar Contraseña</a>
+                    <a href="javascript:void(0)" onclick="openChangePasswordModal(); return false;">
+                        <i class="fas fa-key"></i> <span>Cambiar Contraseña</span>
+                    </a>
                 </li>
-                <li><a href="javascript:void(0)" onclick="logout(); return false;"><i class="fas fa-sign-out-alt"></i>
-                        Cerrar Sesión</a></li>
+                <li>
+                    <a href="javascript:void(0)" onclick="logout(); return false;">
+                        <i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span>
+                    </a>
+                </li>
             </ul>
         </div>
         <div class="dashboard-content">
-            <header class="dash-header"
-                style="flex-direction:row; justify-content:space-between; align-items:center; height:auto; padding: 10px 20px;">
-                <div style="display:flex; align-items:center; gap:15px;">
-                    <!-- Logos Small Version -->
-                    <img src="images/ConsejoSuperiorDeLaJudicatura (1).png" alt="Consejo" style="height:50px;">
-                    <img src="images/logo_sigcma.png?v=2" alt="SIGCMA" style="height:50px;">
-                    <img src="images/LOGO_SGC_ENVIGADO.png" alt="SGC Envigado" style="height:50px;">
-                    <div style="border-left:2px solid #ddd; height:40px; margin:0 10px;"></div>
-                    <h2 style="margin:0; font-size:1.5rem; color:#333;">Seguimiento a Términos</h2>
+            <header class="dash-header">
+                <div class="header-logo-group">
+                    <img src="images/ConsejoSuperiorDeLaJudicatura (1).png" alt="Consejo">
+                    <img src="images/logo_sigcma.png?v=2" alt="SIGCMA">
+                    <img src="images/LOGO_SGC_ENVIGADO.png" alt="SGC Envigado">
+                    <div class="header-divider"></div>
+                    <h2>Seguimiento a Términos</h2>
                 </div>
 
                 <div class="header-right" style="display: flex; flex-direction: column; align-items: flex-end;">
                     <span class="header-credit"
-                        style="padding: 0; font-size: 0.75rem; color: #666; margin-bottom: 5px;">Creado por Jaiber
+                        style="padding: 0; font-size: 0.75rem; color: #666; margin-bottom: 5px;">Creado por
+                        Jaiber
                         Holguín</span>
-                    <span id="welcomeMsg" style="margin-right: 15px; font-weight: bold;">Hola, Funcionario</span>
+                    <span id="welcomeMsg" style="margin-right: 15px; font-weight: bold;">Hola,
+                        Funcionario</span>
                     <!-- User Button is in Sidebar -->
                 </div>
             </header>
@@ -450,7 +464,8 @@
                     <div
                         style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; align-items: flex-end; justify-content: center; background: #f8f9fa; padding: 15px; border-radius: 8px;">
                         <div style="display:flex; flex-direction: column; gap: 5px;">
-                            <label style="font-size: 0.8rem; color: #666; font-weight: bold;">Rango de Fechas:</label>
+                            <label style="font-size: 0.8rem; color: #666; font-weight: bold;">Rango de
+                                Fechas:</label>
                             <div style="display:flex; gap: 5px;">
                                 <input type="date" id="statFilterFechaInicio" class="form-control"
                                     style="max-width: 130px;" title="Desde" onchange="updateStatistics()">
@@ -466,7 +481,8 @@
                             </select>
                         </div>
                         <div style="display:flex; flex-direction: column; gap: 5px; margin-left: 20px;">
-                            <label style="font-size: 0.8rem; color: #666; font-weight: bold;">Ver en Gráfica:</label>
+                            <label style="font-size: 0.8rem; color: #666; font-weight: bold;">Ver en
+                                Gráfica:</label>
                             <div style="display:flex; gap: 15px;">
                                 <label style="cursor:pointer; display:flex; align-items:center; gap:5px;">
                                     <input type="checkbox" id="checkShowTutelas" checked onchange="updateStatistics()">
@@ -489,6 +505,86 @@
                 </div>
             </div>
 
+            <!-- NEW USER MANAGEMENT SECTION -->
+            <div id="user-management-section" style="display: none; padding: 20px;">
+                <div class="card" style="padding: 30px; background: white; border-radius: 20px;">
+                    <h2 style="color: #1a237e; margin-bottom: 25px;"><i class="fas fa-users-cog"></i> Gestión de
+                        Usuarios</h2>
+
+                    <!-- Crear/Editar Usuario Form -->
+                    <div
+                        style="background: #f8fafc; padding: 25px; border-radius: 15px; border: 1px solid #e2e8f0; margin-bottom: 30px;">
+                        <h4 style="color: #1e293b; margin-bottom: 15px;" id="userFormTitle">Crear Nuevo Usuario</h4>
+                        <form id="userForm" onsubmit="handleCreateUser(event)"
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                            <div class="form-group">
+                                <label style="color: #475569;">Usuario</label>
+                                <input type="text" id="newUsername" placeholder="ej: juzgado01" required
+                                    class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label style="color: #475569;">Contraseña</label>
+                                <input type="text" id="newPassword" placeholder="Contraseña" required
+                                    class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label style="color: #475569;">Rol de Acceso</label>
+                                <select id="newRole" class="form-control" onchange="toggleJuzgadoInput()">
+                                    <option value="user">Usuario Juzgado</option>
+                                    <option value="radicador">Radicador (Acceso Total)</option>
+                                    <option value="radicador_tutelas">Radicador (Solo Tutelas)</option>
+                                    <option value="radicador_demandas">Radicador (Solo Demandas)</option>
+                                    <option value="admin">Administrador</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label style="color: #475569;">Nombre Juzgado</label>
+                                <input type="text" id="newJuzgado" placeholder="ej: Juzgado 05" class="form-control">
+                            </div>
+                            <div
+                                style="grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; padding: 10px 0;">
+                                <input type="checkbox" id="newVacancia"
+                                    style="width: auto; height: 18px; width: 18px; cursor: pointer;">
+                                <label for="newVacancia"
+                                    style="margin: 0; font-weight: 600; color: #1e293b; cursor: pointer;">Aplica
+                                    Vacancia Judicial</label>
+                            </div>
+                            <div style="grid-column: 1 / -1; display: flex; gap: 10px; margin-top: 5px;">
+                                <button type="submit" class="btn-primary" style="flex: 1; padding: 12px;">Guardar
+                                    Usuario</button>
+                                <button type="button" onclick="resetUserForm()" class="btn-danger"
+                                    style="flex: 1; padding: 12px; display:none;" id="btnCancelUserEdit">Cancelar
+                                    Edición</button>
+                            </div>
+                            <button type="button" onclick="initializeUsers()" class="btn-warning"
+                                style="grid-column: 1 / -1; margin-top: 10px; background: #bfa15f; border: none; padding: 12px;">
+                                <i class="fas fa-database"></i> Cargar Juzgados Base (Configuración Inicial)
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Lista Usuarios -->
+                    <h4 style="color: #1a237e; margin-bottom: 15px;"><i class="fas fa-list"></i> Usuarios Existentes
+                    </h4>
+                    <div class="table-responsive">
+                        <table class="table" style="width: 100%;">
+                            <thead style="background: #f1f5f9;">
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th>Rol</th>
+                                    <th>Juzgado</th>
+                                    <th>Vacancia</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userListBody">
+                                <!-- JS fills this -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
             <!-- NEW MATRIX STATISTICS SECTION -->
             <div id="estadisticas-tutelas-section" style="display: none; padding: 20px;">
                 <div class="card" style="padding: 20px;">
@@ -507,14 +603,19 @@
                                     <th
                                         style="border: 1px solid #ddd; padding: 5px; background: #e9ecef; white-space: nowrap;">
                                         TIPOS PROCESOS</th>
-                                    <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">REPARTO</th>
-                                    <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">COMPETENCIA
+                                    <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">
+                                        REPARTO</th>
+                                    <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">
+                                        COMPETENCIA
                                     </th>
-                                    <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">REINGRESO POR
+                                    <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">
+                                        REINGRESO POR
                                         NULIDAD O COMPETENCIA</th>
-                                    <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">ENTRADA
+                                    <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">
+                                        ENTRADA
                                         IMPEDIMENTOS</th>
-                                    <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">OTRAS ENTRADAS
+                                    <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">OTRAS
+                                        ENTRADAS
                                         NO EFECTIVAS</th>
                                     <th
                                         style="border: 1px solid #ddd; padding: 5px; background: #333; color: white; text-align: center;">
@@ -541,10 +642,12 @@
                     </h3>
 
                     <!-- PDF Import Section (Initially Hidden) -->
-                    <div id="pdfImportContainer" class="pdf-import-banner" style="margin-bottom: 2rem; display: none;">
+                    <div id="pdfImportContainer" class="pdf-import-banner" style="display: none;">
                         <h5 style="margin-bottom: 10px; color: #333; font-weight: bold;"><i class="fas fa-file-pdf"
-                                style="color: #dc3545; font-size: 1.2rem;"></i> Carga Automática (Acta de Reparto)</h5>
-                        <p style="font-size: 0.9rem; margin-bottom: 10px; color: #666;">Seleccione el archivo PDF del
+                                style="color: #dc3545; font-size: 1.2rem;"></i> Carga
+                            Automática (Acta de Reparto)</h5>
+                        <p style="font-size: 0.9rem; margin-bottom: 10px; color: #666;">Seleccione el archivo
+                            PDF del
                             acta de reparto para diligenciar automáticamente el formulario.</p>
                         <button type="button" class="btn-sm"
                             style="background-color: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold;"
@@ -559,8 +662,7 @@
                     <form id="terminosForm" onsubmit="handleFormSubmit(event)">
                         <div class="form-grid">
                             <!-- 1. ASIGNAR JUZGADO (Para Radicador) - MOVIDO AL INICIO -->
-                            <div class="form-group" id="divJuzgadoDestino"
-                                style="display:none; border: 2px solid #D4AF37; padding: 5px; border-radius: 5px; background: #fffbe6; grid-column: span 2;">
+                            <div class="form-group" id="divJuzgadoDestino" style="display:none; grid-column: span 2;">
                                 <label style="color: #bfa15f; font-weight: bold;">1. ASIGNAR A JUZGADO</label>
                                 <select id="juzgadoDestino" class="form-control" required>
                                     <option value="">Cargando Juzgados...</option>
@@ -646,9 +748,11 @@
                                     <option value="EDUCACIÓN">EDUCACIÓN</option>
                                     <option value="DEBIDO PROCESO">DEBIDO PROCESO</option>
                                     <option value="DERECHO DE PETICIÓN">DERECHO DE PETICIÓN</option>
-                                    <option value="DERECHO A LA INFORMACIÓN PÚBLICA">DERECHO A LA INFORMACIÓN PÚBLICA
+                                    <option value="DERECHO A LA INFORMACIÓN PÚBLICA">DERECHO A LA INFORMACIÓN
+                                        PÚBLICA
                                     </option>
-                                    <option value="CONTRA PROVIDENCIAS JUDICIALES">CONTRA PROVIDENCIAS JUDICIALES
+                                    <option value="CONTRA PROVIDENCIAS JUDICIALES">CONTRA PROVIDENCIAS
+                                        JUDICIALES
                                     </option>
                                     <option value="MEDIO AMBIENTE">MEDIO AMBIENTE</option>
                                     <option value="OTROS">OTROS</option>
@@ -662,10 +766,12 @@
                                     <option value="">Seleccione...</option>
                                     <option value="Reparto">Reparto</option>
                                     <option value="Competencia">Competencia</option>
-                                    <option value="Reingreso por Nulidad o por Competencia">Reingreso por Nulidad o por
+                                    <option value="Reingreso por Nulidad o por Competencia">Reingreso por
+                                        Nulidad o por
                                         Competencia</option>
                                     <option value="Entrada Impedimentos">Entrada Impedimentos</option>
-                                    <option value="Otras Entradas no Efectivas">Otras Entradas no Efectivas</option>
+                                    <option value="Otras Entradas no Efectivas">Otras Entradas no Efectivas
+                                    </option>
                                 </select>
                             </div>
 
@@ -679,7 +785,8 @@
                                     <option value="IMPEDIMENTO">IMPEDIMENTO</option>
                                     <option value="HECHO SUPERADO">HECHO SUPERADO</option>
                                     <option value="RECHAZA">RECHAZA</option>
-                                    <option value="RECHAZA POR CONOCIMIENTO PREVIO">RECHAZA POR CONOCIMIENTO PREVIO
+                                    <option value="RECHAZA POR CONOCIMIENTO PREVIO">RECHAZA POR CONOCIMIENTO
+                                        PREVIO
                                     </option>
                                     <option value="RETIRO VOLUNTARIO">RETIRO VOLUNTARIO</option>
                                     <option value="OTRO">OTRO</option>
@@ -731,7 +838,8 @@
                 <div class="data-table-card">
                     <div style="display: flex; align-items: center; margin-bottom: 10px;">
                         <h3 style="margin:0;">Seguimiento de Tutelas</h3>
-                        <span id="totalCount" class="total-badge"><i class="fas fa-layer-group"></i> Total: 0</span>
+                        <span id="totalCount" class="total-badge"><i class="fas fa-layer-group"></i> Total:
+                            0</span>
                     </div>
 
                     <!-- Toolbar: Buscador y Exportar -->
@@ -743,7 +851,8 @@
                             <!-- 1. BUSCADOR GENERAL (Más grande) -->
                             <div style="flex: 2; min-width: 250px;">
                                 <label for="searchInput"
-                                    style="font-size: 0.8rem; color: #666; margin-bottom: 2px;">Buscar (Radicado,
+                                    style="font-size: 0.8rem; color: #666; margin-bottom: 2px;">Buscar
+                                    (Radicado,
                                     Partes...)</label>
                                 <input type="text" id="searchInput" placeholder="🔍 Escribe para buscar..."
                                     style="width: 100%; padding: 10px 15px; border-radius: 6px; border: 1px solid #aaa; font-size: 1rem; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);">
@@ -764,7 +873,8 @@
 
                             <div style="flex: 1; min-width: 150px;">
                                 <label for="filterFecha"
-                                    style="font-size: 0.8rem; color: #666; margin-bottom: 2px;">Fecha Reparto</label>
+                                    style="font-size: 0.8rem; color: #666; margin-bottom: 2px;">Fecha
+                                    Reparto</label>
                                 <input type="date" id="filterFecha" onchange="filterAndRender()"
                                     style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #aaa; font-size: 1rem;">
                             </div>
@@ -836,61 +946,7 @@
     </div>
     </div>
 
-    <!-- MODAL DE USUARIOS -->
-    <div id="userModal" class="modal">
-        <div class="modal-content" style="max-width: 700px;">
-            <span class="close-modal" onclick="closeUserModal()">&times;</span>
-            <h2><i class="fas fa-users-cog"></i> Gestión de Usuarios</h2>
 
-            <!-- Crear Usuario -->
-            <div style="padding: 15px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                <h4 style="color:white;">Crear Nuevo Usuario</h4>
-                <form id="userForm" onsubmit="handleCreateUser(event)"
-                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <input type="text" id="newUsername" placeholder="Usuario (ej: juzgado01)" required
-                        class="form-control">
-                    <input type="text" id="newPassword" placeholder="Contraseña" required class="form-control">
-                    <select id="newRole" class="form-control" onchange="toggleJuzgadoInput()">
-                        <option value="user">Usuario Juzgado</option>
-                        <option value="radicador">Radicador (Acceso Total)</option>
-                        <option value="radicador_tutelas">Radicador (Solo Tutelas)</option>
-                        <option value="radicador_demandas">Radicador (Solo Demandas)</option>
-                        <option value="admin">Administrador</option>
-                    </select>
-                    <input type="text" id="newJuzgado" placeholder="Nombre Juzgado (ej: Juzgado 05)"
-                        class="form-control">
-                    <div style="grid-column: span 2; display: flex; align-items: center; gap: 10px;">
-                        <input type="checkbox" id="newVacancia" style="width: auto;">
-                        <label for="newVacancia" style="margin: 0; font-weight: bold; color: white;">Aplica Vacancia
-                            Judicial</label>
-                    </div>
-                    <button type="submit" class="btn-primary" style="grid-column: span 2;">Crear Usuario</button>
-                    <button type="button" onclick="initializeUsers()" class="btn-warning"
-                        style="grid-column: span 2; margin-top: 10px;">
-                        <i class="fas fa-database"></i> Cargar Juzgados Base (Excel)
-                    </button>
-                </form>
-            </div>
-
-            <!-- Lista Usuarios -->
-            <h4 style="color:white;">Usuarios Existentes</h4>
-            <div class="table-responsive">
-                <table class="table table-dark table-striped" style="font-size: 0.9rem; background: transparent;">
-                    <thead>
-                        <tr>
-                            <th style="color:white;">Usuario</th>
-                            <th style="color:white;">Rol</th>
-                            <th style="color:white;">Juzgado</th>
-                            <th style="color:white;">Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody id="userListBody">
-                        <!-- JS fills this -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
 
     <!-- MODAL CAMBIAR CONTRASEÑA PROPIA -->
     <div id="changePasswordModal" class="modal">

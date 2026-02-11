@@ -48,16 +48,23 @@ window.handleCreateUser = function (e) {
     }
 }
 
-function resetUserForm() {
+window.resetUserForm = function () {
     const form = document.getElementById('userForm');
+    if (!form) return;
     form.reset();
     form.dataset.mode = 'create';
     document.getElementById('newUsername').disabled = false;
+    document.getElementById('userFormTitle').innerText = "Crear Nuevo Usuario";
+
     const btn = form.querySelector('button[type="submit"]');
-    btn.innerText = "Crear Usuario";
-    btn.classList.remove('btn-warning');
-    btn.classList.remove('btn-danger'); // Remove custom red class
-    btn.classList.add('btn-primary');
+    if (btn) {
+        btn.innerText = "Guardar Usuario";
+        btn.classList.remove('btn-warning', 'btn-danger');
+        btn.classList.add('btn-primary');
+    }
+
+    const cancelBtn = document.getElementById('btnCancelUserEdit');
+    if (cancelBtn) cancelBtn.style.display = 'none';
 }
 
 window.editUser = function (id) {
@@ -69,20 +76,33 @@ window.editUser = function (id) {
             document.getElementById('newUsername').disabled = true; // LOCK ID
             document.getElementById('newPassword').value = data.password;
             document.getElementById('newRole').value = data.role;
-            document.getElementById('newJuzgado').value = data.juzgado;
+            document.getElementById('newJuzgado').value = data.juzgado || '';
             document.getElementById('newVacancia').checked = data.hasVacancia || false;
+
+            document.getElementById('userFormTitle').innerText = "Editando Usuario: " + data.username;
 
             // UI Switch to Edit Mode
             const form = document.getElementById('userForm');
-            form.dataset.mode = 'edit';
-            const btn = form.querySelector('button[type="submit"]');
-            btn.innerText = "EDITAR USUARIO"; // Texto en mayúsculas como énfasis
-            btn.classList.remove('btn-primary');
-            btn.classList.add('btn-danger'); // Usar clase Roja Vistosa
+            if (form) {
+                form.dataset.mode = 'edit';
+                const btn = form.querySelector('button[type="submit"]');
+                if (btn) {
+                    btn.innerText = "ACTUALIZAR USUARIO";
+                    btn.classList.remove('btn-primary');
+                    btn.classList.add('btn-warning');
+                }
+            }
+
+            const cancelBtn = document.getElementById('btnCancelUserEdit');
+            if (cancelBtn) cancelBtn.style.display = 'block';
 
             if (typeof toggleJuzgadoInput === 'function') {
                 toggleJuzgadoInput();
             }
+
+            // Scroll to form (top of section)
+            const section = document.getElementById('user-management-section');
+            if (section) section.scrollIntoView({ behavior: 'smooth' });
         }
     });
 }
@@ -94,17 +114,22 @@ window.renderUserList = function () {
         tbody.innerHTML = '';
         snapshot.forEach((doc) => {
             const user = doc.data();
+            const vacanciaLabel = user.hasVacancia ? '<span class="badge badge-success">SÍ</span>' : '<span class="badge badge-secondary" style="background:#6c757d">NO</span>';
+            const roleLabel = (user.role === 'admin') ? '<span class="badge badge-primary">Admin</span>' :
+                (user.role.startsWith('radicador') ? '<span class="badge badge-info" style="background:#17a2b8">Radicador</span>' : 'Juzgado');
+
             tbody.innerHTML += `
             <tr>
-                <td style="color:white;">${user.username}</td>
-                <td style="color:white;">${user.role === 'admin' ? '<span class="badge badge-primary">Admin</span>' : 'Usuario'}</td>
-                <td style="color:white;">${user.juzgado}</td>
+                <td style="font-weight:bold; color:#1e293b;">${user.username}</td>
+                <td>${roleLabel}</td>
+                <td style="color:#475569;">${user.juzgado || '---'}</td>
+                <td>${vacanciaLabel}</td>
                 <td style="white-space: nowrap;">
-                    <button class="btn-sm" onclick="editUser('${doc.id}')" title="Editar Usuario" 
+                    <button class="btn-sm" onclick="window.editUser('${doc.id}')" title="Editar Usuario" 
                         style="width: 32px; height: 32px; padding: 0; border:none; border-radius:4px; cursor:pointer; background-color: #007bff; display: inline-flex; align-items: center; justify-content: center; margin-right: 5px;">
                         <i class="fas fa-edit" style="color: white; font-size: 14px;"></i>
                     </button>
-                    <button class="btn-sm" onclick="deleteUser('${doc.id}')" title="Borrar Usuario"
+                    <button class="btn-sm" onclick="window.deleteUser('${doc.id}')" title="Borrar Usuario"
                         style="width: 32px; height: 32px; padding: 0; border:none; border-radius:4px; cursor:pointer; background-color: #dc3545; display: inline-flex; align-items: center; justify-content: center;">
                         <i class="fas fa-trash" style="color: white; font-size: 14px;"></i>
                     </button>

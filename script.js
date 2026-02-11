@@ -86,6 +86,24 @@ window.switchModule = function (moduleName) {
     const matrixContainer = document.getElementById('estadisticas-tutelas-section');
     if (matrixContainer) matrixContainer.style.display = 'none';
 
+    const usersContainer = document.getElementById('user-management-section');
+    if (usersContainer) usersContainer.style.display = 'none';
+
+    if (moduleName === 'users') {
+        const navItem = document.getElementById('sidebarBtnUsers');
+        if (navItem) navItem.classList.add('active');
+
+        headerTitle.innerHTML = '<i class="fas fa-users-cog"></i> GESTIÓN DE USUARIOS';
+
+        if (usersContainer) {
+            usersContainer.style.display = 'block';
+            if (typeof window.renderUserList === 'function') {
+                window.renderUserList();
+            }
+        }
+        return;
+    }
+
     if (moduleName === 'estadisticas') {
         document.getElementById('nav-estadisticas').classList.add('active');
         // headerTitle.textContent = "Estadísticas de Gestión"; // Keep simple or dynamic?
@@ -561,6 +579,18 @@ function initUI() {
         });
     }
 
+    // Sidebar Toggle Function
+    window.toggleSidebar = function () {
+        const sidebar = document.querySelector('.dashboard-sidebar');
+        if (sidebar) {
+            if (window.innerWidth <= 768) {
+                sidebar.classList.toggle('open');
+            } else {
+                sidebar.classList.toggle('collapsed');
+            }
+        }
+    }
+
     // Scroll Animations (Fade In)
     const observerOptions = {
         root: null,
@@ -642,17 +672,29 @@ window.openModal = function (imageSrc, caption) {
 }
 
 // Video Modal Logic
-const videoModal = document.getElementById("videoModal");
-const videoPlayer = document.getElementById("promoVideo");
+// Video Modal Logic
+// (No global constants here to avoid init issues if elements are missing)
 
 window.openVideo = function () {
+    const videoModal = document.getElementById("videoModal");
+    const videoPlayer = document.getElementById("promoVideo");
+
     if (videoModal) {
         videoModal.style.display = "block";
-        if (videoPlayer) videoPlayer.play();
+        if (videoPlayer) {
+            // Unmute if needed, but browsers block autoplay with sound usually
+            // videoPlayer.muted = false; 
+            videoPlayer.play().catch(e => console.log("Auto-play prevented:", e));
+        }
+    } else {
+        console.error("Video modal not found!");
     }
 }
 
 window.closeVideo = function () {
+    const videoModal = document.getElementById("videoModal");
+    const videoPlayer = document.getElementById("promoVideo");
+
     if (videoModal) {
         videoModal.style.display = "none";
         if (videoPlayer) {
@@ -925,15 +967,13 @@ window.handleFormSubmit = function (e) {
             // Fallback string if still missing
             if (!juzgadoOwner) juzgadoOwner = "Juzgado Desconocido";
 
-            if (currentUser.role === 'radicador') {
+            if (currentUser.role === 'admin' || currentUser.role.startsWith('radicador')) {
                 juzgadoOwner = document.getElementById('juzgadoDestino').value;
                 if (!juzgadoOwner) {
-                    alert("⚠️ Como Radicador, DEBE asignar un Juzgado destino.");
+                    alert("⚠️ DEBE asignar un Juzgado destino.");
                     if (submitBtn) submitBtn.disabled = false;
                     return;
                 }
-            } else if (currentUser.role === 'admin') {
-                juzgadoOwner = currentUser.juzgado || 'Juzgado Central';
             }
 
             // Si no hay duplicado, procedemos a guardar
@@ -1409,150 +1449,103 @@ window.exportToExcel = function () {
         return;
     }
 
-    // Reuse Logic manually to ensure consistency or call generic helper
-    const query = document.getElementById('searchInput').value.toLowerCase();
-    const filterAlerta = document.getElementById('filterAlerta').value;
+    const query = (document.getElementById('searchInput').value || "").toLowerCase();
     const filterFecha = document.getElementById('filterFecha').value;
+    const filterJuzgadoEl = document.getElementById('filterJuzgadoTabla');
+    const filterJuzgado = filterJuzgadoEl ? filterJuzgadoEl.value : "";
 
     const dataToExport = globalTerminos.filter(item => {
-        const textToSearch = ((item.radicado || "") + " " + (item.accionante || "") + " " + (item.derecho || "")).toLowerCase();
+        const textToSearch = (
+            (item.radicado || "") + " " +
+            (item.accionante || "") + " " +
+            (item.accionado || "") + " " +
+            (item.derecho || "") + " " +
+            (item.decision || "")
+        ).toLowerCase();
+
         const matchesText = textToSearch.includes(query);
-        const matchesAlerta = (filterAlerta === "") || (item.alerta === filterAlerta);
         const matchesFecha = (filterFecha === "") || (item.fechaReparto === filterFecha);
-        return matchesText && matchesAlerta && matchesFecha;
+        const matchesJuzgado = (filterJuzgado === "") ||
+            (item.juzgadoDestino || item.juzgadoOwner || item.juzgado || "").includes(filterJuzgado);
+
+        return matchesText && matchesFecha && matchesJuzgado;
     });
 
-    // DEFINIR COLUMNAS SEGÚN ROL
-    let headers = '';
-    let rows = '';
+    if (dataToExport.length === 0) {
+        alert("No hay registros que coincidan con los filtros actuales.");
+        return;
+    }
 
-    const isRad = (currentUser.role === 'radicador');
+    const isRad = (currentUser.role && currentUser.role.startsWith('radicador'));
+    const wb = XLSX.utils.book_new();
+    let ws_data = [];
 
     if (isRad) {
         // Headers Radicador EXACT ORDER
-        headers = `
-            <tr>
-                <th>Asignado A Juzgado</th>
-                <th>Radicado</th>
-                <th>Fecha Reparto</th>
-                <th>Accionante</th>
-                <th>Doc. Id. Accionante</th>
-                <th>Accionado</th>
-                <th>Doc. Id. Accionado</th>
-                <th>Derecho Vulnerado</th>
-                <th>Observaciones</th>
-            </tr>
-        `;
+        ws_data.push([
+            "Asignado A Juzgado", "Radicado", "Fecha Reparto", "Accionante",
+            "Doc. Id. Accionante", "Accionado", "Doc. Id. Accionado",
+            "Derecho Vulnerado", "Observaciones"
+        ]);
+
+        dataToExport.forEach(item => {
+            ws_data.push([
+                item.juzgadoDestino || item.juzgadoOwner || item.juzgado || 'Sin Asignar',
+                item.radicado,
+                item.fechaReparto,
+                item.accionante,
+                item.idAccionante || '',
+                item.accionado || '',
+                item.idAccionado || '',
+                item.derecho || '',
+                item.observaciones || ''
+            ]);
+        });
     } else {
         // Headers Admin/Juzgado (Standard)
-        headers = `
-            <tr>
-                <th>Radicado</th>
-                <th>Accionante</th>
-                <th>Doc. Id. Accionante</th>
-                <th>Accionado</th>
-                <th>Doc. Id. Accionado</th>
-                <th>Juzgado</th>
-                <th>Asignado</th>
-                <th>F. Reparto</th>
-                <th>F. Fallo</th>
-                <th>Límite (10)</th>
-                <th>¿Cumplió?</th>
-                <th>Alerta</th>
-                <th>Decisión</th>
-                <th>Derecho</th>
-                <th>Género</th>
-                <th>Impugnó</th>
-            </tr>
-        `;
+        ws_data.push([
+            "Radicado", "Accionante", "Doc. Id. Accionante", "Accionado",
+            "Doc. Id. Accionado", "Juzgado", "Asignado", "F. Reparto",
+            "F. Fallo", "Límite (10)", "¿Cumplió?", "Alerta",
+            "Decisión", "Derecho", "Género", "Impugnó"
+        ]);
+
+        dataToExport.forEach(item => {
+            ws_data.push([
+                item.radicado,
+                item.accionante,
+                item.idAccionante || '',
+                item.accionado || '',
+                item.idAccionado || '',
+                item.juzgadoDestino || item.juzgadoOwner || item.juzgado || 'Sin Asignar',
+                item.asignadoA || '',
+                item.fechaReparto,
+                item.fechaNotificacion || '',
+                item.diaDiez,
+                item.cumplio,
+                item.alerta,
+                item.decision || '',
+                item.derecho || '',
+                item.genero || '',
+                item.impugno || ''
+            ]);
+        });
     }
 
-    dataToExport.forEach(item => {
-        const juzName = item.juzgadoDestino || item.juzgadoOwner || item.juzgado || 'Sin Asignar';
+    const ws = XLSX.utils.aoa_to_sheet(ws_data);
 
-        let rowCells = '';
-        if (isRad) {
-            // Rows Radicador EXACT ORDER
-            rowCells = `
-                <td>${juzName}</td>
-                <td class="text-mode">${item.radicado}</td>
-                <td>${item.fechaReparto}</td>
-                <td>${item.accionante}</td>
-                <td>${item.idAccionante || ''}</td>
-                <td>${item.accionado || ''}</td>
-                <td>${item.idAccionado || ''}</td>
-                <td>${item.derecho || ''}</td>
-                <td>${item.observaciones || ''}</td>
-            `;
-        } else {
-            rowCells = `
-                <td class="text-mode">${item.radicado}</td>
-                <td>${item.accionante}</td>
-                <td>${item.idAccionante || ''}</td>
-                <td>${item.accionado || ''}</td>
-                <td>${item.idAccionado || ''}</td>
-                <td>${juzName}</td>
-                <td>${item.asignadoA || ''}</td>
-                <td>${item.fechaReparto}</td>
-                <td>${item.fechaNotificacion}</td>
-                <td>${item.diaDiez}</td>
-                <td>${item.cumplio}</td>
-                <td>${item.alerta}</td>
-                <td>${item.decision || ''}</td>
-                <td>${item.derecho || ''}</td>
-                <td>${item.genero || ''}</td>
-                <td>${item.impugno || ''}</td>
-            `;
+    // Force Radicado column to be string to avoid scientific notation
+    const radColIndex = isRad ? 1 : 0;
+    const range = XLSX.utils.decode_range(ws['!ref']);
+    for (let R = range.s.r + 1; R <= range.e.r; ++R) {
+        const addr = XLSX.utils.encode_col(radColIndex) + (R + 1);
+        if (ws[addr]) {
+            ws[addr].t = 's'; // type string
         }
+    }
 
-        rows += `<tr>${rowCells}</tr>`;
-    });
-
-    let html = `
-        <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
-        <head>
-            <meta charset="UTF-8">
-            <!--[if gte mso 9]>
-            <xml>
-                <x:ExcelWorkbook>
-                    <x:ExcelWorksheets>
-                        <x:ExcelWorksheet>
-                            <x:Name>Tutelas</x:Name>
-                            <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>
-                        </x:ExcelWorksheet>
-                    </x:ExcelWorksheets>
-                </x:ExcelWorkbook>
-            </xml>
-            <![endif]-->
-            <style>
-                table { border-collapse: collapse; width: 100%; }
-                th { background-color: #4CAF50; color: white; border: 1px solid black; padding: 5px; font-weight: bold; text-align: center; }
-                td { border: 1px solid black; padding: 5px; text-align: left; }
-                .text-mode { mso-number-format:"\\@"; } /* Force Text Format */
-            </style>
-        </head>
-        <body>
-            <table>
-                <thead>
-                    ${headers}
-                </thead>
-                <tbody>
-                    ${rows}
-    `;
-
-    // Removed footer logic from loop approach
-    html += `</tbody></table></body></html>`;
-
-    html += `</tbody></table></body></html>`;
-
-    const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "Reporte_Tutelas_SGC.xls"; // .xls extension
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    XLSX.utils.book_append_sheet(wb, ws, "Tutelas");
+    XLSX.writeFile(wb, `Reporte_Tutelas_${new Date().toISOString().slice(0, 10)}.xlsx`);
 }
 
 // PAGINATION STATE
@@ -1631,8 +1624,10 @@ function renderRealtimeTable(terminos) {
                 <i class="fas fa-trash"></i>
             </button>`;
 
+            const rowClass = (currentCollection === 'demandas') ? 'row-demandas' : 'row-tutelas';
+
             const row = `
-                <tr>
+                <tr class="${rowClass}">
                     <td style="color: ${color}; font-weight: bold;">${juzName}</td>
                     <td><strong>${item.radicado}</strong></td>
                     <td>${formatDate(item.fechaReparto)}</td>
@@ -1713,8 +1708,10 @@ function renderRealtimeTable(terminos) {
                 deleteBtnHtml = `<button class="btn-sm btn-danger" onclick="deleteTermino('${item.id}')" title="Borrar"><i class="fas fa-trash"></i></button>`;
             }
 
+            const rowClass = (currentCollection === 'demandas') ? 'row-demandas' : 'row-tutelas';
+
             const row = `
-                <tr>
+                <tr class="${rowClass}">
                     <td style="color: ${color}; font-weight: bold; ${displayStyleJuzgado}">${juzName}</td>
                     <td><strong>${item.radicado}</strong></td>
                     <td>${item.accionante}</td>
@@ -1991,11 +1988,11 @@ window.enterDashboard = function () {
         }
 
         // PDF INJECTION LOGIC (From V2)
-        const isRad = currentUser && currentUser.role.startsWith('radicador');
+        const isRadOrAdmin = currentUser && (currentUser.role === 'admin' || currentUser.role.startsWith('radicador'));
         let pdfCont = document.getElementById('pdfImportContainer');
 
-        // AUTO-HEAL: If container missing but user is Radicador, inject it.
-        if (!pdfCont && isRad) {
+        // AUTO-HEAL: If container missing but user is Admin/Radicador, inject it.
+        if (!pdfCont && isRadOrAdmin) {
             console.warn("DEBUG: PDF Container missing. Injecting it now...");
             // Find insertion point (before form)
             const formCard = document.querySelector('.data-form-card');
@@ -2020,11 +2017,11 @@ window.enterDashboard = function () {
         }
 
         if (pdfCont) {
-            pdfCont.style.setProperty('display', isRad ? 'block' : 'none', 'important');
+            pdfCont.style.setProperty('display', isRadOrAdmin ? 'block' : 'none', 'important');
         }
 
-        // UI Updates for Radicador (ANY TYPE)
-        if (currentUser.role.startsWith('radicador')) {
+        // UI Updates for Admin/Radicador (ANY TYPE)
+        if (currentUser.role === 'admin' || currentUser.role.startsWith('radicador')) {
             // Show juzgado select if applicable
             const divJuzgado = document.getElementById('divJuzgadoDestino');
             const juzgadoInput = document.getElementById('juzgadoDestino');
@@ -2040,8 +2037,10 @@ window.enterDashboard = function () {
 
             const filterCumplio = document.getElementById('filterCumplio');
             if (filterCumplio) filterCumplio.style.display = 'none'; // ocultar filtro
+        }
 
-            // LOGICA RADICADOR:
+        // LOGICA RADICADOR:
+        if (currentUser.role.startsWith('radicador')) {
             // 1. Fecha Reparto = HOY y Bloqueada
             const fReparto = document.getElementById('fechaReparto');
             if (fReparto) {
