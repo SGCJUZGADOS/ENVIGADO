@@ -1311,27 +1311,7 @@ window.editTermino = function (id) {
         }
     });
 }
-// RESET FORM (Cancel Edit)
-window.resetForm = function () {
-    document.getElementById('terminosForm').reset();
-    currentEditId = null;
-
-    // Restaurar UI
-    const submitBtn = document.querySelector('#terminosForm button[type="submit"]');
-    submitBtn.innerHTML = 'Guardar Registro';
-    submitBtn.className = "btn-success"; // Verde Original
-    submitBtn.style.fontSize = "";
-    submitBtn.style.padding = "";
-
-    const indicator = document.getElementById('editModeIndicator');
-    if (indicator) indicator.style.display = 'none';
-
-    const cancelBtn = document.getElementById('cancelEditBtn');
-    if (cancelBtn) cancelBtn.style.display = 'none';
-
-    const histBtn = document.getElementById('btnHistory');
-    if (histBtn) histBtn.style.display = 'none';
-}
+// function resetForm() defined above
 
 function formatDate(dateString) {
     if (!dateString) return "-";
@@ -1834,7 +1814,36 @@ window.deleteTermino = function (id) {
 }
 
 
-// (The master version of login and dashboard logic is already defined above)
+// ==========================================
+// UNIFIED DASHBOARD ENTRY
+// ==========================================
+window.enterDashboard = function () {
+    const loginModal = document.getElementById("loginModal");
+    const dashboard = document.getElementById("dashboard");
+    const welcomeMsg = document.getElementById("welcomeMsg");
+    const sidebarBtnUsers = document.getElementById("sidebarBtnUsers");
+
+    if (loginModal) loginModal.style.display = "none";
+    if (dashboard) dashboard.style.display = "flex";
+
+    if (welcomeMsg && currentUser) {
+        welcomeMsg.innerHTML = `<i class="fas fa-user-circle"></i> Hola, ${currentUser.username || 'Funcionario'}`;
+    }
+
+    // Role-based Sidebar visibility
+    if (sidebarBtnUsers) {
+        if (currentUser.role === 'admin') {
+            sidebarBtnUsers.style.display = 'block';
+        } else {
+            sidebarBtnUsers.style.display = 'none';
+        }
+    }
+
+    // Default view: Tutelas
+    if (typeof window.switchModule === 'function') {
+        window.switchModule('tutelas');
+    }
+}
 
 // ==========================================
 // LOGICA DE FECHAS Y DÍAS HÁBILES (COLOMBIA)
