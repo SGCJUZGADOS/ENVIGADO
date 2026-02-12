@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SGC | Juzgados de Envigado</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="sidebar_styles.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/sidebar_styles.css">
     <!-- Google Fonts -->
     <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800;900&family=Open+Sans:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -14,8 +14,8 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Extra Styles -->
-    <link rel="stylesheet" href="modal_fix_snippet.css">
-    <link rel="stylesheet" href="survey_button_styles.css">
+    <link rel="stylesheet" href="css/modal_fix_snippet.css">
+    <link rel="stylesheet" href="css/survey_button_styles.css">
 </head>
 
 <body>
@@ -41,7 +41,7 @@
                 <span></span>
             </button>
             <ul class="nav-links">
-                <li><a href="javascript:void(0)" onclick="openVideo()">Inicio</a></li>
+                <li><a href="javascript:void(0)" onclick="location.reload()">Inicio</a></li>
                 <li><a href="#estrategia">Estrategia</a></li>
                 <li><a href="#objetivos">Objetivos</a></li>
                 <li><a href="#valores">Principios</a></li>
@@ -318,16 +318,6 @@
         <div id="caption"></div>
     </div>
 
-    <!-- Video Modal -->
-    <div id="videoModal" class="modal" style="display:none;">
-        <span class="close-modal" onclick="closeVideo()">&times;</span>
-        <div class="modal-content-video">
-            <video width="100%" controls id="promoVideo">
-                <source src="videos/el_sonido_de_la_calidad.mov" type="video/mp4">
-                Tu navegador no soporta videos HTML5.
-            </video>
-        </div>
-    </div>
 
     <!-- Login Modal -->
     <div id="loginModal" class="modal">
@@ -544,6 +534,11 @@
                                 <label style="color: #475569;">Nombre Juzgado</label>
                                 <input type="text" id="newJuzgado" placeholder="ej: Juzgado 05" class="form-control">
                             </div>
+                            <div class="form-group">
+                                <label style="color: #475569;">Correo Institucional</label>
+                                <input type="email" id="newEmail" placeholder="ej: juzgado@cendoj.ramajudicial.gov.co"
+                                    class="form-control">
+                            </div>
                             <div
                                 style="grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; padding: 10px 0;">
                                 <input type="checkbox" id="newVacancia"
@@ -559,7 +554,7 @@
                                     style="flex: 1; padding: 12px; display:none;" id="btnCancelUserEdit">Cancelar
                                     Edición</button>
                             </div>
-                            <button type="button" onclick="initializeUsers()" class="btn-warning"
+                            <button type="button" onclick="ensureUsersExist()" class="btn-warning"
                                 style="grid-column: 1 / -1; margin-top: 10px; background: #bfa15f; border: none; padding: 12px;">
                                 <i class="fas fa-database"></i> Cargar Juzgados Base (Configuración Inicial)
                             </button>
@@ -576,6 +571,7 @@
                                     <th>Usuario</th>
                                     <th>Rol</th>
                                     <th>Juzgado</th>
+                                    <th>Correo</th>
                                     <th>Vacancia</th>
                                     <th>Acciones</th>
                                 </tr>
@@ -705,6 +701,7 @@
                                 <input type="text" id="accionado" class="form-control" placeholder="Nombre Completo"
                                     required oninput="this.value = this.value.toUpperCase().replace(/[0-9]/g, '')">
                             </div>
+
                             <div class="form-group">
                                 <label>Doc. Id. Accionado</label>
                                 <input type="text" id="idAccionado" class="form-control" placeholder="Solo números"
@@ -712,57 +709,11 @@
                                     oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                             </div>
 
-                            <div class="form-group" id="group-fechaFallo">
-                                <label>Fecha Fallo (Sentencia)</label>
-                                <input type="date" id="fechaNotificacion" class="form-control">
-                            </div>
-                            <!-- Campos Calculados -->
-                            <div class="form-group" id="group-diaSiete">
-                                <label>Día Siete (Límite)</label>
-                                <input type="date" id="diaSiete" class="form-control" readonly
-                                    style="background-color: #f0f0f0;">
-                            </div>
-                            <div class="form-group" id="group-diaDiez">
-                                <label>Día Diez (Límite)</label>
-                                <input type="date" id="diaDiez" class="form-control" readonly
-                                    style="background-color: #f0f0f0;">
-                            </div>
-                            <div class="form-group" style="display:none;"> <!-- Hidden for now logic logic -->
-                                <label>Estado / Alerta</label>
-                                <select id="alerta" class="form-control">
-                                    <option value="Verde">A Tiempo</option>
-                                    <option value="Amarillo">Alerta</option>
-                                    <option value="Rojo">Vencido</option>
-                                </select>
-                            </div>
-                            <div class="form-group" id="group-asignadoA">
-                                <label>Asignado A</label>
-                                <input type="text" id="asignadoA" class="form-control" placeholder="Nombre funcionario">
-                            </div>
-                            <div class="form-group" id="group-derecho">
-                                <label>Derecho Vulnerado</label>
-                                <select id="derecho" class="form-control" required>
-                                    <option value="">Seleccione...</option>
-                                    <option value="SALUD">SALUD</option>
-                                    <option value="SEGURIDAD SOCIAL">SEGURIDAD SOCIAL</option>
-                                    <option value="VIDA">VIDA</option>
-                                    <option value="MÍNIMO VITAL">MÍNIMO VITAL</option>
-                                    <option value="IGUALDAD">IGUALDAD</option>
-                                    <option value="EDUCACIÓN">EDUCACIÓN</option>
-                                    <option value="DEBIDO PROCESO">DEBIDO PROCESO</option>
-                                    <option value="DERECHO DE PETICIÓN">DERECHO DE PETICIÓN</option>
-                                    <option value="DERECHO A LA INFORMACIÓN PÚBLICA">DERECHO A LA INFORMACIÓN
-                                        PÚBLICA
-                                    </option>
-                                    <option value="CONTRA PROVIDENCIAS JUDICIALES">CONTRA PROVIDENCIAS
-                                        JUDICIALES
-                                    </option>
-                                    <option value="MEDIO AMBIENTE">MEDIO AMBIENTE</option>
-                                    <option value="OTROS">OTROS</option>
-                                </select>
+                            <!-- Row 2, Col 3: Spacer for Radicador -->
+                            <div class="form-group radicador-only-spacer" style="height: 1px; visibility: hidden;">
                             </div>
 
-                            <!-- NUEVO CAMPO: INGRESO -->
+                            <!-- Row 2, Col 4: Ingreso -->
                             <div class="form-group">
                                 <label>Tipo de Ingreso</label>
                                 <select id="ingreso" class="form-control">
@@ -778,6 +729,65 @@
                                 </select>
                             </div>
 
+                            <div class="form-group">
+                                <label>Observaciones</label>
+                                <textarea id="observaciones" class="form-control" rows="1"
+                                    placeholder="Comentarios adicionales... (Opcional)"></textarea>
+                            </div>
+
+                            <!-- RESTORED ADMIN/JUZGADO FIELDS -->
+                            <div class="form-group" id="group-fechaFallo">
+                                <label>Fecha Fallo (Sentencia)</label>
+                                <input type="date" id="fechaNotificacion" class="form-control">
+                            </div>
+
+                            <div class="form-group" id="group-diaSiete">
+                                <label>Día Siete (Límite)</label>
+                                <input type="date" id="diaSiete" class="form-control" readonly
+                                    style="background-color: #f0f0f0;">
+                            </div>
+
+                            <div class="form-group" id="group-diaDiez">
+                                <label>Día Diez (Límite)</label>
+                                <input type="date" id="diaDiez" class="form-control" readonly
+                                    style="background-color: #f0f0f0;">
+                            </div>
+
+                            <div class="form-group" style="display:none;" id="group-alerta-container">
+                                <label>Estado / Alerta</label>
+                                <select id="alerta" class="form-control">
+                                    <option value="Verde">A Tiempo</option>
+                                    <option value="Amarillo">Alerta</option>
+                                    <option value="Rojo">Vencido</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" id="group-asignadoA">
+                                <label>Asignado A</label>
+                                <input type="text" id="asignadoA" class="form-control" placeholder="Nombre funcionario">
+                            </div>
+
+                            <div class="form-group" id="group-derecho">
+                                <label>Derecho Vulnerado</label>
+                                <select id="derecho" class="form-control">
+                                    <option value="">Seleccione...</option>
+                                    <option value="SALUD">SALUD</option>
+                                    <option value="SEGURIDAD SOCIAL">SEGURIDAD SOCIAL</option>
+                                    <option value="VIDA">VIDA</option>
+                                    <option value="MÍNIMO VITAL">MÍNIMO VITAL</option>
+                                    <option value="IGUALDAD">IGUALDAD</option>
+                                    <option value="EDUCACIÓN">EDUCACIÓN</option>
+                                    <option value="DEBIDO PROCESO">DEBIDO PROCESO</option>
+                                    <option value="DERECHO DE PETICIÓN">DERECHO DE PETICIÓN</option>
+                                    <option value="DERECHO A LA INFORMACIÓN PÚBLICA">DERECHO A LA INFORMACIÓN PÚBLICA
+                                    </option>
+                                    <option value="CONTRA PROVIDENCIAS JUDICIALES">CONTRA PROVIDENCIAS JUDICIALES
+                                    </option>
+                                    <option value="MEDIO AMBIENTE">MEDIO AMBIENTE</option>
+                                    <option value="OTROS">OTROS</option>
+                                </select>
+                            </div>
+
                             <div class="form-group" id="group-decision">
                                 <label>Decisión de Fondo</label>
                                 <select id="decision" class="form-control">
@@ -788,13 +798,13 @@
                                     <option value="IMPEDIMENTO">IMPEDIMENTO</option>
                                     <option value="HECHO SUPERADO">HECHO SUPERADO</option>
                                     <option value="RECHAZA">RECHAZA</option>
-                                    <option value="RECHAZA POR CONOCIMIENTO PREVIO">RECHAZA POR CONOCIMIENTO
-                                        PREVIO
+                                    <option value="RECHAZA POR CONOCIMIENTO PREVIO">RECHAZA POR CONOCIMIENTO PREVIO
                                     </option>
                                     <option value="RETIRO VOLUNTARIO">RETIRO VOLUNTARIO</option>
                                     <option value="OTRO">OTRO</option>
                                 </select>
                             </div>
+
                             <div class="form-group" id="group-genero">
                                 <label>Perspectiva de Género</label>
                                 <select id="genero" class="form-control">
@@ -803,6 +813,7 @@
                                     <option value="SI">SÍ</option>
                                 </select>
                             </div>
+
                             <div class="form-group" id="group-impugno">
                                 <label>¿Impugnó?</label>
                                 <select id="impugno" class="form-control">
@@ -812,26 +823,20 @@
                                 </select>
                             </div>
 
-                            <div class="form-group">
-                                <label>Observaciones</label>
-                                <textarea id="observaciones" class="form-control" rows="3"
-                                    placeholder="Comentarios adicionales... (Opcional)"></textarea>
-                            </div>
 
-                            <!-- INDICADOR DE EDICIÓN FLOTANTE -->
-                            <div id="editModeIndicator"
-                                style="display:none; text-align:right; grid-column: 1 / -1; margin-bottom: -15px;">
+                        </div>
+
+                        <div style="display:flex; justify-content:center; align-items: center; gap: 15px;">
+                            <!-- INDICADOR DE EDICIÓN (AHORA JUNTO A LOS BOTONES) -->
+                            <div id="editModeIndicator" style="display:none;">
                                 <span
-                                    style="background-color: #dc3545; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; animation: pulse 2s infinite;">
+                                    style="background-color: #dc3545; color: white; padding: 8px 15px; border-radius: 8px; font-weight: bold; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                                     <i class="fas fa-edit"></i> MODO EDICIÓN
                                 </span>
                             </div>
 
-                        </div>
-
-                        <div style="display:flex; justify-content:center; gap: 15px;">
                             <button type="submit" class="btn-success">Guardar Registro</button>
-                            <button type="button" id="cancelEditBtn" onclick="resetForm()" class="btn-danger"
+                            <button type="button" id="cancelEditBtn" onclick="window.resetForm()" class="btn-danger"
                                 style="display:none;">Cancelar</button>
                         </div>
                     </form>
@@ -873,6 +878,14 @@
                             </div>
 
                             <!-- 3. FILTRO FECHA -->
+                            <div style="flex: 1; min-width: 150px;">
+                                <label for="filterRadicadoAnio"
+                                    style="font-size: 0.8rem; color: #666; margin-bottom: 2px;">Año y
+                                    Consecutivo</label>
+                                <input type="text" id="filterRadicadoAnio" placeholder="Ej: 202600001"
+                                    oninput="filterAndRender()"
+                                    style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #aaa; font-size: 1rem;">
+                            </div>
 
                             <div style="flex: 1; min-width: 150px;">
                                 <label for="filterFecha"
@@ -882,8 +895,8 @@
                                     style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #aaa; font-size: 1rem;">
                             </div>
 
-                            <!-- 4. FILTRO JUZGADO (RESTAURADO) -->
-                            <div style="flex: 2; min-width: 250px;">
+                            <!-- 4. FILTRO JUZGADO -->
+                            <div id="group-filter-juzgado" style="flex: 2; min-width: 250px;">
                                 <label for="filterJuzgadoTabla"
                                     style="font-size: 0.8rem; color: #666; margin-bottom: 2px;">Filtrar por
                                     Despacho</label>
@@ -895,15 +908,14 @@
 
                         </div>
                         <button id="importBtn" onclick="document.getElementById('excelInput').click()"
-                            class="btn-primary"
-                            style="background: #17a2b8; border: none; width: auto; padding: 10px 20px; color: white;">
+                            class="btn-premium btn-premium-info" style="width: auto;">
                             <i class="fas fa-file-import"></i> Importar Excel
                         </button>
                         <input type="file" id="excelInput" accept=".xlsx, .xls" style="display:none"
                             onchange="handleExcelUpload(this)">
 
-                        <button id="exportBtn" onclick="exportToExcel()" class="btn-primary"
-                            style="background: #28a745; border: none; width: auto; padding: 10px 20px;">
+                        <button id="exportBtn" onclick="exportToExcel()" class="btn-premium btn-premium-green"
+                            style="width: auto;">
                             <i class="fas fa-file-excel"></i> Exportar
                         </button>
                     </div>
@@ -912,15 +924,14 @@
                         <table class="table" id="tablaTerminos">
                             <thead>
                                 <tr>
+                                    <th>F. Reparto</th>
+                                    <th id="colJuzgadoHeader" style="display:none;">Juzgado</th>
                                     <th>Radicado</th>
                                     <th>Accionante</th>
                                     <th>Doc. Id. Accionante</th>
                                     <th>Accionado</th>
                                     <th>Doc. Id. Accionado</th>
-                                    <th id="colJuzgadoHeader" style="display:none;">Juzgado</th>
-                                    <!-- Hidden by default -->
                                     <th id="colAsignado">Asignado</th>
-                                    <th>F. Reparto</th>
                                     <th id="colFallo">F. Fallo</th>
                                     <th id="colDia10">Día 10</th>
                                     <th id="colCumplio">¿Cumplió?</th>
@@ -1012,22 +1023,36 @@
         </div>
     </div>
 
-    <!-- Video Modal -->
-    <div id="videoModal" class="modal">
-        <div class="modal-content modal-content-video">
-            <span class="close-modal" onclick="closeVideo()">&times;</span>
-            <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; background: #000;">
-                <video id="promoVideo" controls style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
-                    <source src="videos/el_sonido_de_la_calidad.mp4" type="video/mp4">
-                    Tu navegador no soporta la reproducción de video.
-                </video>
-            </div>
-        </div>
-    </div>
+    <!-- ============================================
+     MEJORAS SGC v2.0
+     AGREGAR EN ESTE ORDEN (IMPORTANTE)
+     ============================================ -->
 
-    <script src="script.js"></script>
-    <script src="user_management.js"></script>
-    <script src="import_logic.js"></script>
+    <!-- 1. Notificaciones -->
+    <script src="js/notifications.js"></script>
+
+    <!-- 2. Modal de Progreso -->
+    <script src="js/progress-modal.js"></script>
+
+    <!-- 3. Exportación Excel -->
+    <script src="js/excel-export.js"></script>
+
+    <!-- 4. Importación Excel -->
+    <script src="js/excel-import-improved.js"></script>
+
+    <!-- 5. Filtros Avanzados -->
+    <script src="js/advanced-filters.js"></script>
+
+    <!-- 6. Modo Oscuro -->
+    <script src="js/dark-mode.js"></script>
+
+    <!-- 7. Auditoría -->
+    <script src="js/audit-system.js"></script>
+
+    <!-- TU SCRIPT PRINCIPAL (DEBE IR AL FINAL) -->
+    <script src="js/script.js"></script>
+    <script src="js/user_management.js"></script>
+    <script src="js/import_logic.js"></script>
 </body>
 
 </html>
