@@ -178,10 +178,13 @@
 .dashboard-content {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
+    /* Evita que el contenido interno empuje la ventana */
     padding: 50px;
     background: #f8fafc;
     transition: all 0.3s ease;
     min-width: 0;
+    width: 100%;
     /* Prevents overflow in flexbox */
 }
 
@@ -310,6 +313,15 @@
 
 #nav-demandas.active a i {
     color: #1b5e20;
+}
+
+/* ... (rest of reset/body omitted intentionally, assumed unchanged unless specific selector targeted) ... */
+html,
+body {
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Hover effects for specific modules when NOT active */
