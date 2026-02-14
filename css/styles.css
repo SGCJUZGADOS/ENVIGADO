@@ -1284,6 +1284,8 @@ textarea:focus {
 }
 
 .table td {
+    color: var(--text-color);
+    /* Fix invisible white text */
     font-weight: 600;
     /* Stronger bold for data */
 }

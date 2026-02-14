@@ -71,7 +71,7 @@ async function sendAlertEmail(juzgadoEmail, record, collectionName) {
         <tr><td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #eee;">Límite Día 10:</td><td style="padding: 8px; border-bottom: 1px solid #eee;">${record.diaDiez}</td></tr>
       </table>
       <div style="margin-top: 25px; padding: 15px; background: #fff3cd; border-radius: 5px; border-left: 5px solid ${isRed ? '#dc3545' : '#ffc107'};">
-        <strong>Acción requerida:</strong> Por favor ingrese al sistema SGC Envigado para gestionar este registro y actualizar su estado.
+        <strong>Acción requerida:</strong> Por favor ingrese al sistema <a href="https://sgcjuzgados.github.io/ENVIGADO/" style="color: #004884; font-weight: bold; text-decoration: underline;">SGC Envigado</a> para gestionar este registro y actualizar su estado.
       </div>
       <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
       <p style="font-size: 0.8rem; color: #999; text-align: center;">Generado automáticamente por el Sistema de Gestión de Calidad - Envigado.</p>
